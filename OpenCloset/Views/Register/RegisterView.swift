@@ -22,13 +22,13 @@ struct RegisterView: View {
                 
                 // Profile Icon
                 Circle()
-                    .strokeBorder(Color.yellow, lineWidth: 4)
+                    .strokeBorder(Color.accent2, lineWidth: 4)
                     .background(Circle().foregroundColor(.white))
                     .overlay(
                         Image(systemName: "person.crop.circle.badge.plus")
                             .resizable()
                             .scaledToFit()
-                            .foregroundColor(.orange)
+                            .foregroundColor(.accentColor)
                             .padding(80)
                             .onTapGesture {
                                 showCamera = true

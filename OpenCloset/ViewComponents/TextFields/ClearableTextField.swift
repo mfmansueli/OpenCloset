@@ -18,7 +18,7 @@ struct ClearableTextField: View {
                 text = ""
             }) {
                 Image(systemName: "xmark.circle.fill")
-                    .foregroundColor(.red)
+                    .foregroundColor(.accent)
             }
             .padding(.trailing)
         }
