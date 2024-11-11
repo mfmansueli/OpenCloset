@@ -17,19 +17,20 @@ struct ProfileView: View {
             HStack {
                 
                 KFImage(URL(string: profile.profileImageURL)) .resizable()
-                    .frame(width: 150, height: 150)
+                    .frame(width: 130, height: 130)
                     .clipShape(Circle())
                     .overlay(Circle()
                     .stroke(Color .white, lineWidth: 2))
                     .shadow(radius: 10)
+                    .padding(.leading, 20)
                 
                 VStack(alignment: .leading) {
                     Text("Paola Campanile")
-                        .font(.headline)
-                    Text("@paolacampanile")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
+                        .padding(.bottom,30)
+                        .padding(.leading, 15)
+                        .font(.title2)
                     
+
                     HStack {
                         Text("150 m")
                             .padding(5)
@@ -49,25 +50,7 @@ struct ProfileView: View {
             }
             .padding()
             
-            HStack {
-                Image("knitted_hat")
-                    .resizable()
-                    .frame(width: 100, height: 100)
-                    .cornerRadius(10)
-                
-                Spacer()
-                
-                VStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(width: 100, height: 100)
-                    
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(width: 100, height: 100)
-                }
-            }
-            .padding()
+     
             
             Spacer()
             
