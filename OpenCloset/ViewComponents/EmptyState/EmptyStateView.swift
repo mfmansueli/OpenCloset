@@ -18,7 +18,7 @@ struct EmptyStateView: View {
             Image(systemName: imageName)
                 .resizable()
                 .scaledToFit()
-                .frame(height: 80)
+                .frame(height: 120)
                 .foregroundColor(Color("PinkStrong"))
             
             Text (subtext)
@@ -31,5 +31,5 @@ struct EmptyStateView: View {
 }
 
 #Preview {
-    EmptyStateView(imageName: "envelope")
+    EmptyStateView(imageName: "hanger", subtext: "empty closet")
 }

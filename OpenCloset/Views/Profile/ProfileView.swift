@@ -11,9 +11,25 @@ import Kingfisher
 struct ProfileView: View {
     @ObservedObject var viewModel: ProfileViewModel = ProfileViewModel()
     var profile: Profile
-    @State private var items = Array(1...20) // Initial items
     @State private var isLoading = false
-    var productList: [String] = []
+    @State var isCurrentUser = false
+    var productList: [Product] = [
+        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
+                true, isSwapping: false),
+            Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
+                    true, isSwapping: false),
+        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
+                true, isSwapping: false),
+        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
+                true, isSwapping: false),
+        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
+                true, isSwapping: false),
+        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
+                true, isSwapping: false),
+        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
+                true, isSwapping: false)
+    ]
+    
     
     let columns: [GridItem] = [
         GridItem(.flexible()),
@@ -43,12 +59,15 @@ struct ProfileView: View {
             }
             .padding()
             if productList.isEmpty {
-                
+                EmptyStateView(imageName: "hanger", subtext: "empty closet")
             } else {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 10) {
-                        ForEach(items, id: \.self) { item in
-                            KFImage(URL(string: profile.profileImageURL)) //uso KFImage per caricare l'immagine in ogni cella della griglia
+                        ForEach(productList, id: \.self) { product in
+                            KFImage(URL(string: product.image.first ?? "")) //uso KFImage per caricare l'immagine in ogni cella della griglia
+                                .placeholder({
+                                    Image(systemName: "clothes")
+                                })
                                 .resizable()
                                 .scaledToFill() // per scalare l'immagine
                                 .frame(height: 160) // per l'altezza del rettangolo nella griglia
@@ -76,14 +95,22 @@ struct ProfileView: View {
             
             
             Spacer()
-            
-            Button(action: {
-                // Action for Ask Info
-            }) {
-                Text("Ask Info ♡")
+            if isCurrentUser {
+                    Button(action: {
+                        // Action for Ask Info
+                    }) {
+                        Text("Add clothes")
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+            } else {
+                
+                    Button(action: {
+                        // Action for Ask Info
+                    }) {
+                        Text("Ask Info ♡")
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
             }
-            .buttonStyle(PrimaryButtonStyle())
-            
         }
     }
 
@@ -92,11 +119,11 @@ struct ProfileView: View {
     func loadMoreData() {
         guard !isLoading else { return }
         isLoading = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            let moreItems = Array(items.count + 1...items.count + 20)
-            items.append(contentsOf: moreItems)
-            isLoading = false
-        }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//            let  = Array(items.count + 1...items.count + 20)
+//            items.append(contentsOf: moreItems)
+//            isLoading = false
+//        }
     }
 }
 
