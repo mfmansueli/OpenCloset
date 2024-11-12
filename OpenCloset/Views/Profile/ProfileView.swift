@@ -57,6 +57,8 @@ struct ProfileView: View {
                 
                 Spacer()
                 
+                EmptyClosetView()
+                
                 VStack {
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color.gray.opacity(0.2))

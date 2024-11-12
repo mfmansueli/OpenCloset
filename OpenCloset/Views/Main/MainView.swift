@@ -14,9 +14,6 @@ struct MainView: View {
             HomeView().tabItem {
                 Image(systemName: "tshirt")
             }.tag(1)
-            RegisterView().tabItem {
-                Image(systemName: "tshirt")
-            }.tag(2)
             ChatView().tabItem {
                 Image(systemName: "envelope")
             }.tag(3)
