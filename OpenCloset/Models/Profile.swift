@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Profile: Identifiable {
-    var id = UUID()
+struct Profile: Identifiable, Decodable {
+    var id: String = UUID().uuidString
     var name: String
     var surname: String
     var email: String

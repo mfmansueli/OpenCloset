@@ -6,26 +6,44 @@
 //
 
 import SwiftUI
-import FirebaseCore
-import FirebaseFirestore
-import FirebaseAuth
-
 struct LoginView: View {
-    @State private var showAlert = false
-    @State private var alertMessage = ""
-    
+    @ObservedObject var viewModel = LoginViewModel()
+    @Environment(\.presentationMode) var presentationMode
+
     var body: some View {
-        VStack {
-            Text("Login with Facebook")
+        VStack(spacing: 16) {
+            Text("🌿 Welcome to Open Closet!")
                 .font(.largeTitle)
-                .padding()
-                .background(Color.blue)
+                .fontWeight(.bold)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 16)
+                .padding(.top, 32)
+            
+            Text("Join our community and start swapping clothes to reduce your carbon footprint. Every piece you swap helps the planet and revamps your wardrobe with unique, pre-loved treasures. It's a win-win for you and Mother Earth! 🌍👗♻️")
+                .font(.body)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 16)
+            
+            SocialLoginButton(imageName: "Facebook", buttonText: "Continue with Facebook") {
+                viewModel.loginWithFacebook()
+            }
+            
+            Button("not now, thanks") {
+                presentationMode.wrappedValue.dismiss()
+            }
+            .font(.system(size: 16, weight: .medium))
+            .foregroundStyle(.black)
         }
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
+        }
+        .fullScreenCover(isPresented: $viewModel.showRegister) {
+            RegisterView(name: viewModel.name, surname: viewModel.surname, email: viewModel.email, profileImageURL: viewModel.profileImageURL)
         }
     }
 }
+
 
 #Preview {
     LoginView()
