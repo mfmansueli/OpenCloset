@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct ClosetTestView: View {
+struct EmptyClosetView: View {
     var body: some View {
         EmptyStateView(imageName: "hanger", subtext: "Your Open Closet is empty" )
     }
 }
 
 #Preview {
-    ClosetTestView()
+    EmptyClosetView()
 }
