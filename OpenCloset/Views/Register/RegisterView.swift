@@ -13,6 +13,7 @@ struct RegisterView: View {
     @State private var surname: String = ""
     @State private var about: String = ""
     @State private var showCamera: Bool = false
+    @FocusState private var isFocused: Bool
     
     @ObservedObject var viewModel: RegisterViewModel = RegisterViewModel()
     var body: some View {
@@ -45,6 +46,8 @@ struct RegisterView: View {
                 ClearableTextField(text: $name, placeholder: "Name")
                 ClearableTextField(text: $surname, placeholder: "Surname")
                 ClearableTextField(text: $about, placeholder: "About you")
+                    
+                        
                 
                 Spacer()
                 
