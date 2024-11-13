@@ -9,20 +9,37 @@ import SwiftUI
 struct ClearableTextField: View {
     @Binding var text: String
     var placeholder: String
-    
+    var errorMessage: String?
+    var keyboardType: UIKeyboardType = .default
+    var textContentType: UITextContentType?
+
     var body: some View {
-        HStack {
-            TextField(placeholder, text: $text)
-                .padding()
-            Button(action: {
-                text = ""
-            }) {
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundColor(.accent)
+        VStack(alignment: .leading) {
+            HStack {
+                TextField(placeholder, text: $text)
+                    .keyboardType(keyboardType)
+                    .textContentType(textContentType)
+                    .autocapitalization(.none)
+                    .padding()
+                Button(action: {
+                    text = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.red)
+                }
+                .padding(.trailing)
             }
-            .padding(.trailing)
+            .background(Color(red: 1.0, green: 0.9, blue: 0.9))
+            .padding(.bottom, 4)
+            
+            if let errorMessage = errorMessage, !errorMessage.isEmpty {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .font(.caption)
+                    .padding(.leading, 8)
+                    .padding(.bottom, 4)
+            }
         }
-        .background(Color(red: 1.0, green: 0.9, blue: 0.9))
         .padding(.bottom, 16)
     }
 }
@@ -30,5 +47,5 @@ struct ClearableTextField: View {
 #Preview {
     @Previewable @State var text = "Example text"
     
-    ClearableTextField(text: $text, placeholder: "Enter something...")
+    ClearableTextField(text: $text, placeholder: "Enter something...", errorMessage: "This is an error message")
 }

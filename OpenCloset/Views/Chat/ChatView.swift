@@ -9,8 +9,19 @@ import SwiftUI
 
 struct ChatView: View {
     @ObservedObject var viewModel: ChatViewModel = ChatViewModel()
+    @State private var selection: Int = 1
+    var messages: [String] = []
     var body: some View {
-        Text("Hello, World!")
+        NavigationStack {
+            VStack {
+                if messages.isEmpty {
+                    EmptyStateView(imageName: "envelope")
+                } else {
+                    Text("Hello, World!")
+                }
+                
+            }.navigationTitle("Chat")
+        }
     }
 }
 

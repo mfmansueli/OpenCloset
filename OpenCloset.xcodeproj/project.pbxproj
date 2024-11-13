@@ -8,24 +8,41 @@
 
 /* Begin PBXBuildFile section */
 		9D9473EB2CDB6D9500D9EBC0 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9473EA2CDB6D9500D9EBC0 /* Kingfisher */; };
-		9DAD559D2CDA3DD80009E788 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAD559C2CDA3DD80009E788 /* FirebaseAnalytics */; };
 		9DAD559F2CDA3DD80009E788 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAD559E2CDA3DD80009E788 /* FirebaseAuth */; };
 		9DAD55A12CDA3DD80009E788 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAD55A02CDA3DD80009E788 /* FirebaseCore */; };
 		9DAD55A32CDA3DD80009E788 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAD55A22CDA3DD80009E788 /* FirebaseCrashlytics */; };
 		9DAD55A52CDA3DD80009E788 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAD55A42CDA3DD80009E788 /* FirebaseDatabase */; };
 		9DAD55A72CDA3DD80009E788 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAD55A62CDA3DD80009E788 /* FirebaseFirestore */; };
-		9DAD55A92CDA3DD80009E788 /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAD55A82CDA3DD80009E788 /* FirebasePerformance */; };
 		9DAD55AB2CDA3DD80009E788 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAD55AA2CDA3DD80009E788 /* FirebaseStorage */; };
+		9DC1CD052CE0C177009B6160 /* FacebookLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 9DC1CD042CE0C177009B6160 /* FacebookLogin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9D4577CD2CD2342700A5B659 /* OpenCloset.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenCloset.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9DC1CCFF2CDFB85D009B6160 /* Exceptions for "OpenCloset" folder in "OpenCloset" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9D4577CC2CD2342700A5B659 /* OpenCloset */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9D4577CF2CD2342700A5B659 /* OpenCloset */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9DC1CCFF2CDFB85D009B6160 /* Exceptions for "OpenCloset" folder in "OpenCloset" target */,
+			);
 			path = OpenCloset;
+			sourceTree = "<group>";
+		};
+		9DC1CCDF2CDF851E009B6160 /* SwiftUIPreviews */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SwiftUIPreviews;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -35,9 +52,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9DAD55A92CDA3DD80009E788 /* FirebasePerformance in Frameworks */,
+				9DC1CD052CE0C177009B6160 /* FacebookLogin in Frameworks */,
 				9DAD55A52CDA3DD80009E788 /* FirebaseDatabase in Frameworks */,
-				9DAD559D2CDA3DD80009E788 /* FirebaseAnalytics in Frameworks */,
 				9D9473EB2CDB6D9500D9EBC0 /* Kingfisher in Frameworks */,
 				9DAD55A32CDA3DD80009E788 /* FirebaseCrashlytics in Frameworks */,
 				9DAD55A12CDA3DD80009E788 /* FirebaseCore in Frameworks */,
@@ -54,6 +70,8 @@
 			isa = PBXGroup;
 			children = (
 				9D4577CF2CD2342700A5B659 /* OpenCloset */,
+				9DC1CCDF2CDF851E009B6160 /* SwiftUIPreviews */,
+				9DC1CCE82CDF8537009B6160 /* Frameworks */,
 				9D4577CE2CD2342700A5B659 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -64,6 +82,13 @@
 				9D4577CD2CD2342700A5B659 /* OpenCloset.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9DC1CCE82CDF8537009B6160 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -86,15 +111,14 @@
 			);
 			name = OpenCloset;
 			packageProductDependencies = (
-				9DAD559C2CDA3DD80009E788 /* FirebaseAnalytics */,
 				9DAD559E2CDA3DD80009E788 /* FirebaseAuth */,
 				9DAD55A02CDA3DD80009E788 /* FirebaseCore */,
 				9DAD55A22CDA3DD80009E788 /* FirebaseCrashlytics */,
 				9DAD55A42CDA3DD80009E788 /* FirebaseDatabase */,
 				9DAD55A62CDA3DD80009E788 /* FirebaseFirestore */,
-				9DAD55A82CDA3DD80009E788 /* FirebasePerformance */,
 				9DAD55AA2CDA3DD80009E788 /* FirebaseStorage */,
 				9D9473EA2CDB6D9500D9EBC0 /* Kingfisher */,
+				9DC1CD042CE0C177009B6160 /* FacebookLogin */,
 			);
 			productName = OpenCloset;
 			productReference = 9D4577CD2CD2342700A5B659 /* OpenCloset.app */;
@@ -127,6 +151,7 @@
 			packageReferences = (
 				9DAD559B2CDA3D2F0009E788 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				9D9473E92CDB6D9500D9EBC0 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				9DC1CD032CE0C177009B6160 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9D4577CE2CD2342700A5B659 /* Products */;
@@ -283,12 +308,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = OpenCloset/OpenCloset.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"OpenCloset/SupportFiles/Preview Content\"";
 				DEVELOPMENT_TEAM = 99U6584A9W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OpenCloset/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "OpenCloset needs access to your camera";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -302,6 +331,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rottenapples.OpenCloset;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -313,12 +343,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = OpenCloset/OpenCloset.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"OpenCloset/SupportFiles/Preview Content\"";
 				DEVELOPMENT_TEAM = 99U6584A9W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OpenCloset/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "OpenCloset needs access to your camera";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -332,6 +366,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rottenapples.OpenCloset;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -378,6 +413,14 @@
 				minimumVersion = 11.4.0;
 			};
 		};
+		9DC1CD032CE0C177009B6160 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/facebook/facebook-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 14.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -385,11 +428,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9D9473E92CDB6D9500D9EBC0 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
-		};
-		9DAD559C2CDA3DD80009E788 /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9DAD559B2CDA3D2F0009E788 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
 		};
 		9DAD559E2CDA3DD80009E788 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -416,15 +454,15 @@
 			package = 9DAD559B2CDA3D2F0009E788 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
 		};
-		9DAD55A82CDA3DD80009E788 /* FirebasePerformance */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9DAD559B2CDA3D2F0009E788 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebasePerformance;
-		};
 		9DAD55AA2CDA3DD80009E788 /* FirebaseStorage */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9DAD559B2CDA3D2F0009E788 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		9DC1CD042CE0C177009B6160 /* FacebookLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9DC1CD032CE0C177009B6160 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookLogin;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
