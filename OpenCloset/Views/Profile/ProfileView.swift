@@ -39,7 +39,8 @@ struct ProfileView: View {
     var body: some View {
         VStack {
             HStack {
-                KFImage(URL(string: profile.profileImageURL)) .resizable()
+                KFImage(URL(string: profile.profileImageURL))
+                    .resizable()
                     .frame(width: 130, height: 130)
                     .clipShape(Circle())
                     .overlay(Circle()
@@ -48,7 +49,7 @@ struct ProfileView: View {
                     .padding(.leading, 20)
                 
                 VStack(alignment: .leading) {
-                    Text("Paolo Campanile")
+                    Text("\(profile.name) \(profile.surname)")
                         .padding(.bottom,20)
                         .padding(.leading, 10)
                         .font(.title2)
