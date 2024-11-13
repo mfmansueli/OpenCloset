@@ -13,23 +13,6 @@ struct ProfileView: View {
     var profile: Profile
     @State private var isLoading = false
     @State var isCurrentUser = false
-    var productList: [Product] = [
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false),
-            Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                    true, isSwapping: false),
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false),
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false),
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false),
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false),
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false)
-    ]
-    
     
     let columns: [GridItem] = [
         GridItem(.flexible()),

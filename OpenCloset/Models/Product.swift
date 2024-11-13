@@ -7,8 +7,9 @@
 
 import Foundation
 
-struct Product: Identifiable, Hashable {
-    var id = UUID()
+struct Product: Identifiable, Hashable, Decodable {
+    var id = UUID().uuidString
+    var name: String
     var size: String
     var condition: String
     var description: String
