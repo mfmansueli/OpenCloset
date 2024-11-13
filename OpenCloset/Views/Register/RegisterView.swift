@@ -81,7 +81,7 @@ struct RegisterView: View {
                         }
                     })
                     .fullScreenCover(isPresented: $viewModel.showPhotoLibrary, content: {
-                            ImagePickerView(image: $viewModel.profileImage)
+                        ImagePickerView(images: .constant([]), image: $viewModel.profileImage, allowMultipleSelection: false)
                     })
                     .padding()
                     

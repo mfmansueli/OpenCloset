@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Kingfisher
+import FirebaseAuth
 
 struct ProfileView: View {
     @ObservedObject var viewModel: ProfileViewModel = ProfileViewModel()
@@ -15,19 +16,19 @@ struct ProfileView: View {
     @State var isCurrentUser = false
     var productList: [Product] = [
         Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false),
-            Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
                     true, isSwapping: false),
         Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false),
+                    true, isSwapping: false),
         Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false),
+                    true, isSwapping: false),
         Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false),
+                    true, isSwapping: false),
         Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false),
+                    true, isSwapping: false),
         Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                true, isSwapping: false)
+                    true, isSwapping: false),
+        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
+                    true, isSwapping: false)
     ]
     
     
@@ -65,16 +66,18 @@ struct ProfileView: View {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 10) {
                         ForEach(productList, id: \.self) { product in
-                            KFImage(URL(string: product.image.first ?? "")) //uso KFImage per caricare l'immagine in ogni cella della griglia
-                                .placeholder({
-                                    Image(systemName: "clothes")
-                                })
-                                .resizable()
-                                .scaledToFill() // per scalare l'immagine
-                                .frame(height: 160) // per l'altezza del rettangolo nella griglia
-                                .cornerRadius(20)
-                            
-                                .cornerRadius(10)
+                            NavigationLink(destination: ProductView()) {
+                                KFImage(URL(string: product.image.first ?? "")) //uso KFImage per caricare l'immagine in ogni cella della griglia
+                                    .placeholder({
+                                        Image(systemName: "clothes")
+                                    })
+                                    .resizable()
+                                    .scaledToFill() // per scalare l'immagine
+                                    .frame(height: 160) // per l'altezza del rettangolo nella griglia
+                                    .cornerRadius(20)
+                                
+                                    .cornerRadius(10)
+                            }
                         }
                         
                         // Show loading indicator at the end of the list
@@ -93,38 +96,37 @@ struct ProfileView: View {
                 }
             }
             
-            
-            
             Spacer()
-            if isCurrentUser {
+            if Auth.auth().currentUser != nil {
+                NavigationLink(destination: AddProductView()) {
                     Button(action: {
-                        // Action for Ask Info
                     }) {
                         Text("Add clothes")
                     }
                     .buttonStyle(PrimaryButtonStyle())
+                    .allowsHitTesting(false)
+                }
             } else {
-                
-                    Button(action: {
-                        // Action for Ask Info
-                    }) {
-                        Text("Ask Info ♡")
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
+                Button(action: {
+                    // Action for Ask Info
+                }) {
+                    Text("Ask Info ♡")
+                }
+                .buttonStyle(PrimaryButtonStyle())
             }
-        }
+        }.navigationTitle("Closet")
     }
-
+    
     
     
     func loadMoreData() {
         guard !isLoading else { return }
         isLoading = true
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//            let  = Array(items.count + 1...items.count + 20)
-//            items.append(contentsOf: moreItems)
-//            isLoading = false
-//        }
+        //        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        //            let  = Array(items.count + 1...items.count + 20)
+        //            items.append(contentsOf: moreItems)
+        //            isLoading = false
+        //        }
     }
 }
 

@@ -8,84 +8,75 @@
 import SwiftUI
 
 struct ProductView: View {
+    @State var condition = "Like New"
+    
     var body: some View {
         VStack {
-            // Header with back button and title
-            HStack {
-                Button(action: {
-                    // Action for back button
-                }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(.orange)
-                }
-                Text("Paola's Closet")
-                    .foregroundColor(.orange)
-                    .font(.headline)
-                Spacer()
-            }
-            .padding()
-            
             // Image of the hat
             Image("handmade_hat")
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .padding()
+                .scaledToFill()
+                .frame(maxWidth: .infinity, maxHeight: 380)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+            
             
             // Hat title
-            Text("Handmade Hat")
-                .font(.title)
-                .padding(.top)
-            
-            // Action buttons
-            HStack {
-                Button(action: {
-                    // Action for swap button
-                }) {
-                    Text("Swap")
-                        .padding()
-                        .background(Color.purple)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                
-                Button(action: {
-                    // Action for donate button
-                }) {
-                    Text("Donate")
-                        .padding()
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-            }
-            .padding()
-            
-            // Details about the hat
             VStack(alignment: .leading) {
-                Text("Condition: new")
-                Text("Material: wool")
-                Text("Brand: handmade")
-                Text("Season: winter/fall")
-                Text("Color: lilac, green, orange, yellow")
-                Text("Size: one size, 80 cm")
-                Text("Description: The hat is handmade by my aunt, I donate it because it’s not my style.")
-            }
-            .padding()
-            
-            Spacer()
-            
-            // Ask Info button
-            Button(action: {
-                // Action for ask info button
-            }) {
-                Text("Ask Info")
-                    .padding()
-                    .background(Color.orange)
+                Text("Handmade Hat")
+                    .font(.title)
+                    .fontWeight(.semibold)
+                
+                // Action buttons
+                HStack {
+                    Text("Swap")
+                    .fontWeight(.bold)
+                    .fontDesign(.rounded)
                     .foregroundColor(.white)
-                    .cornerRadius(10)
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 2)
+                    .background(.accent)
+                    .cornerRadius(8)
+                        
+                    Text("Donate")
+                    .fontWeight(.bold)
+                    .fontDesign(.rounded)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 2)
+                    .background(.accent)
+                    .cornerRadius(8)
+                }
+                .padding(.bottom, 5)
+                
+                // Details about the hat
+                Text("Condition: Like New")
+                Text("Size: S")
+            
+                VStack(alignment: .leading) {
+                    Text("Item description")
+                        .font(.headline)
+                        .padding(.top, 1)
+                    Text("A brief description of the item uploaded by the user goes here. Do we like without the grey background? Is it better?")
+                    
+                    // RoundedRectangle(cornerRadius: 10)
+                    //   .foregroundStyle(Color.gray.opacity(0.2))
+                    
+                }
+                // Ask Info button
+                Button {
+                    // action goes here
+                } label: {
+                    Text("Ask Info ♡")
+                        .fontWeight(.bold)
+                        .fontDesign(.rounded)
+                        .padding(.all, 10)
+                        .frame(maxWidth: .infinity)
+                }
+                .padding(.top, 10)
+                .buttonStyle(.borderedProminent)
             }
-            .padding()
         }
+        .padding()
     }
 }
 
