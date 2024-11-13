@@ -21,7 +21,6 @@ struct RegisterView: View {
             ScrollView {
                 VStack {
                     VStack {
-                        
                         if let profileImageURL = viewModel.profileImageURL {
                             KFImage(URL(string: profileImageURL))
                                 .resizable()

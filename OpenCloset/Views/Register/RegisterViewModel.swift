@@ -7,6 +7,8 @@
 import SwiftUI
 import Firebase
 import FirebaseStorage
+import FirebaseAuth
+
 
 class RegisterViewModel: ObservableObject {
     
@@ -82,6 +84,8 @@ class RegisterViewModel: ObservableObject {
             "email": self.email,
             "about": self.about
         ]
+        
+        
         
         if let imageUrl = profileImageURL {
             profileData["profileImageURL"] = imageUrl

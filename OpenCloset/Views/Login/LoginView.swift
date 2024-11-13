@@ -7,9 +7,12 @@
 
 import SwiftUI
 struct LoginView: View {
-    @ObservedObject var viewModel = LoginViewModel()
+    @ObservedObject var viewModel: LoginViewModel
     @Environment(\.presentationMode) var presentationMode
-
+    
+    init(selection: Binding<Int>) {
+        viewModel = LoginViewModel(selection: selection)
+    }
     var body: some View {
         VStack(spacing: 16) {
             Text("🌿 Welcome to Open Closet!")
@@ -41,10 +44,18 @@ struct LoginView: View {
         .fullScreenCover(isPresented: $viewModel.showRegister) {
             RegisterView(name: viewModel.name, surname: viewModel.surname, email: viewModel.email, profileImageURL: viewModel.profileImageURL)
         }
+        .fullScreenCover(isPresented: $viewModel.isLoading) {
+            ProgressView("Loading...")
+                .padding()
+                .background(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 10)
+                .presentationBackground(.black.opacity(0.4))
+        }
     }
 }
 
 
 #Preview {
-    LoginView()
+    LoginView(selection: .constant(0))
 }
