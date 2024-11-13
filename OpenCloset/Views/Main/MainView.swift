@@ -29,7 +29,7 @@ struct MainView: View {
                 ProfileView(profile: Profile(id: user?.uid ?? "", name: user?.displayName ?? "", surname: "", email: user?.email ?? "", about: "Second-hand enthusiast 🌱 ", profileImageURL: user?.photoURL?.absoluteString ?? ""))
                     .toolbar {
                         ToolbarItem(placement: .navigationBarTrailing) {
-                            Button("", systemImage: "arrowshape.turn.up.left") {
+                            Button("", systemImage: "rectangle.portrait.and.arrow.right") {
                                 do {
                                     try Auth.auth().signOut()
                                     selection = 1

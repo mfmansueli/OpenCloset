@@ -19,11 +19,14 @@ class RegisterViewModel: ObservableObject {
     @Published var about: String = ""
     
     @Published var showCamera: Bool = false
+    @Published var showPhotoLibrary: Bool = false
+    @Published var showPhotoOptions: Bool = false
     @Published var emailError: String?
     @Published var nameError: String?
     @Published var surnameError: String?
     
     var profileImageURL: String?
+    var onRegisterCompletion: (() -> Void)?
     
     init(name: String, surname: String, email: String, profileImageURL: String?) {
         self.name = name
@@ -85,17 +88,16 @@ class RegisterViewModel: ObservableObject {
             "about": self.about
         ]
         
-        
-        
         if let imageUrl = profileImageURL {
             profileData["profileImageURL"] = imageUrl
         }
         
-        collection.addDocument(data: profileData) { error in
+        collection.addDocument(data: profileData) { [weak self] error in
             if let error = error {
                 print("Error adding document: \(error.localizedDescription)")
             } else {
                 print("Document added successfully!")
+                self?.onRegisterCompletion?()
             }
         }
     }

@@ -11,11 +11,11 @@ import Kingfisher
 struct RegisterView: View {
     @ObservedObject var viewModel: RegisterViewModel
     @Environment(\.presentationMode) var presentationMode
-
+    
     init(name: String, surname: String, email: String, profileImageURL: String?) {
         viewModel = RegisterViewModel(name: name, surname: surname, email: email, profileImageURL: profileImageURL)
     }
-
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -31,7 +31,7 @@ struct RegisterView: View {
                                     .frame(width: 250, height: 250))
                                 .padding(.bottom, 48)
                                 .onTapGesture {
-                                    viewModel.showCamera = true
+                                    viewModel.showPhotoOptions = true
                                 }
                         } else if let profileImage = viewModel.profileImage {
                             // Display the profile image if available
@@ -45,7 +45,7 @@ struct RegisterView: View {
                                     .frame(width: 250, height: 250))
                                 .padding(.bottom, 48)
                                 .onTapGesture {
-                                    viewModel.showCamera = true
+                                    viewModel.showPhotoOptions = true
                                 }
                         } else {
                             // Default overlay when no profile image is available
@@ -59,18 +59,29 @@ struct RegisterView: View {
                                         .foregroundColor(.orange)
                                         .padding(80)
                                         .onTapGesture {
-                                            viewModel.showCamera = true
+                                            viewModel.showPhotoOptions = true
                                         }
                                 )
                                 .frame(width: 250, height: 250)
                                 .padding(.bottom, 48)
                         }
                     }
+                    .confirmationDialog("", isPresented: $viewModel.showPhotoOptions, titleVisibility: .hidden, actions: {
+                        Button("Take a photo") {
+                            viewModel.showCamera = true
+                        }
+                        Button("Choose from library") {
+                            viewModel.showPhotoLibrary = true
+                        }
+                    })
                     .fullScreenCover(isPresented: $viewModel.showCamera, content: {
                         ZStack {
                             Color.black.edgesIgnoringSafeArea(.all)
                             ImageCaptureView(image: $viewModel.profileImage)
                         }
+                    })
+                    .fullScreenCover(isPresented: $viewModel.showPhotoLibrary, content: {
+                            ImagePickerView(image: $viewModel.profileImage)
                     })
                     .padding()
                     
@@ -87,6 +98,7 @@ struct RegisterView: View {
                 }
                 .padding(.top, 16)
             }
+            .scrollDismissesKeyboard(.immediately)
             .navigationBarTitle("Register", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -97,6 +109,11 @@ struct RegisterView: View {
                             .foregroundColor(.black)
                     }
                 }
+            }
+        }
+        .onAppear {
+            viewModel.onRegisterCompletion = {
+                presentationMode.wrappedValue.dismiss()
             }
         }
     }
