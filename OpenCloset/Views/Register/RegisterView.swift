@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RegisterView: View {
-    @State private var email: String = "paolacampanile@gmail.com"
+    @State private var email: String = ""
     @State private var name: String = ""
     @State private var surname: String = ""
     @State private var about: String = ""
