@@ -34,6 +34,18 @@ class HomeViewModel: ObservableObject {
     }
     
     func fetchProfiles(page: Int) {
+        var distanceList: [String] = []
+
+                let startValue = 50
+                let endValue = 900
+                let itemCount = 100
+                let step = (endValue - startValue) / (itemCount - 1)
+
+                for i in 0..<itemCount {
+                    let value = startValue + (i * step)
+                    distanceList.append("\(value)m")
+                }
+        
         let collection: Query = Firestore.firestore().collection("Profiles").limit(toLast: page * 100).order(by: "name")
         var list: [Profile] = []
         collection.getDocuments { [weak self] (snapshot, error) in
@@ -45,6 +57,7 @@ class HomeViewModel: ObservableObject {
                     do {
                         var profile = try document.data(as: Profile.self)
                         profile.id = document.documentID
+                        profile.distance = distanceList.removeFirst()
                         list.append(profile)
                     } catch(let error) {
                         print("Error decoding profile: \(error)")
