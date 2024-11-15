@@ -25,11 +25,11 @@ struct ClearableTextField: View {
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.red)
+                        .foregroundColor(.textTitle.opacity(0.7))
                 }
                 .padding(.trailing)
             }
-            .background(Color(red: 1.0, green: 0.9, blue: 0.9))
+            .background(Color.grayGiorgio)
             .padding(.bottom, 4)
             
             if let errorMessage = errorMessage, !errorMessage.isEmpty {
