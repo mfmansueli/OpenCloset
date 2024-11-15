@@ -46,22 +46,37 @@ struct ProfileView: View {
                     .clipShape(Circle())
                     .overlay(Circle()
                         .stroke(Color .white, lineWidth: 2))
-                    .shadow(radius: 10)
                     .padding(.leading, 20)
-                
                 VStack(alignment: .leading) {
                     Text("\(profile.name) \(profile.surname)")
-                        .padding(.bottom,20)
-                        .padding(.leading, 10)
+                        .padding(.bottom,3)
+                        .padding(.leading, 0)
                         .font(.title2)
                         .bold()
+                    HStack {
+                        Text("150 m")
+                        .fontWeight(.bold)
+                        .fontDesign(.rounded)
+                        .foregroundColor(.accent)
+                        .font(.system(size: 20))
+                        .padding(.trailing, 20)
+                        HStack {
+                            ForEach(0..<3, id: \.self) { _ in
+                                Image(systemName: "star.fill")
+                                    .foregroundColor(.accent)
+                            }
+                        }
+
+                    }
                     
                 }
                 Spacer()
             }
+            .padding(.bottom, 5)
+
             .padding()
             if productList.isEmpty {
-                EmptyStateView(imageName: "hanger", subtext: "empty closet")
+                EmptyStateView(imageName: "hanger", subtext: "Your Open Closet is empty")
             } else {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 10) {
@@ -84,15 +99,9 @@ struct ProfileView: View {
                         if isLoading {
                             ProgressView()
                                 .padding()
-                                .onAppear {
-                                    loadMoreData()
-                                }
                         }
                     }
                     .padding()
-                }
-                .onAppear {
-                    loadMoreData() // Load initial data
                 }
             }
             
@@ -115,18 +124,6 @@ struct ProfileView: View {
                 .buttonStyle(PrimaryButtonStyle())
             }
         }.navigationTitle("Closet")
-    }
-    
-    
-    
-    func loadMoreData() {
-        guard !isLoading else { return }
-        isLoading = true
-        //        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-        //            let  = Array(items.count + 1...items.count + 20)
-        //            items.append(contentsOf: moreItems)
-        //            isLoading = false
-        //        }
     }
 }
 

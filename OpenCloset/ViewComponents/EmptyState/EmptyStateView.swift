@@ -19,10 +19,11 @@ struct EmptyStateView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(height: 120)
-                .foregroundColor(Color("PinkStrong"))
+                .foregroundColor(Color(.accent))
             
             Text (subtext)
-                .foregroundStyle(Color("PinkStrong"))
+                .foregroundStyle(Color(.accent))
+                .font(.system(size: 20))
                 .multilineTextAlignment(.center)
             
             Spacer()
@@ -31,5 +32,5 @@ struct EmptyStateView: View {
 }
 
 #Preview {
-    EmptyStateView(imageName: "hanger", subtext: "empty closet")
+    EmptyStateView(imageName: "hanger", subtext: "Your Open Closet is empty")
 }
