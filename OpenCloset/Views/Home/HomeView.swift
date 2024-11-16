@@ -47,20 +47,28 @@ struct ProfileItemView: View {
         HStack {
             VStack(alignment: .leading) {
                 Text("\(profile.name) \(profile.surname)")
-                    .font(.headline)
+                    .font(.system(size: 20))
                 
                 HStack {
-                    Text("100m")
-                        .padding(5)
-                        .background(Color.pink)
-                        .cornerRadius(5)
+                    Text(profile.distance)
+                        .foregroundColor(.accent)
+                        .fontWeight(.bold)
+                        .fontDesign(.rounded)
+                        .font(.system(size: 20))
+                        .padding(.trailing, 17)
+                    
+                
+                    
                     ForEach(0..<3, id: \.self) { _ in
                         Image(systemName: "star.fill")
                             .foregroundColor(.yellow)
+                            .frame(width: 12, height: 20)
                     }
                 }
                 Text(profile.about)
-                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .fontDesign(.rounded)
+                    .foregroundColor(.black)
             }
             Spacer()
             KFImage(URL(string: profile.profileImageURL))
