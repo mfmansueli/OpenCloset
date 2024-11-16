@@ -114,7 +114,7 @@ struct ProfileView: View {
                 }
                 .buttonStyle(PrimaryButtonStyle())
             }
-        }.navigationTitle("Closet")
+        }
     }
     
     

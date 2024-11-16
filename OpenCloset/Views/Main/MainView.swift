@@ -12,40 +12,42 @@ struct MainView: View {
     @State private var selection: Int = 1
     @State private var showLoginSheet: Bool = false
     @State private var tempSelection: Int? = nil
-
+    
     var body: some View {
         TabView(selection: $selection) {
             HomeView().tabItem {
-                Image(systemName: "tshirt")
+                Label("home", systemImage: "tshirt")
             }.tag(1)
             
             ChatView().tabItem {
-                Image(systemName: "envelope")
+                Label("chat", systemImage: "envelope")
             }
             .tag(2)
             
-            let user = Auth.auth().currentUser
             NavigationStack {
-                ProfileView(profile: Profile(id: user?.uid ?? "", name: user?.displayName ?? "", surname: "", email: user?.email ?? "", about: "Second-hand enthusiast 🌱 ", profileImageURL: user?.photoURL?.absoluteString ?? ""))
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button("", systemImage: "rectangle.portrait.and.arrow.right") {
-                                do {
-                                    try Auth.auth().signOut()
-                                    selection = 1
-                                } catch {
-                                    
+                if let profile = AppDefault.loadObject(type: Profile.self, key: .userProfile) {
+                    ProfileView(profile: profile)
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                Button("", systemImage: "rectangle.portrait.and.arrow.right") {
+                                    do {
+                                        try Auth.auth().signOut()
+                                        selection = 1
+                                    } catch {
+                                        
+                                    }
                                 }
                             }
                         }
-                    }
-                
+                } else {
+                    EmptyView()
+                }
             }.tabItem {
-                Image(systemName: "person.crop.circle")
+                Label("profile", systemImage: "person.crop.circle")
             }.tag(3)
         }
         .onChange(of: selection, { oldValue, newValue in
-            if Auth.auth().currentUser == nil, newValue == 2 || newValue == 3 {
+            if AppDefault.loadObject(type: Profile.self, key: .userProfile) == nil, newValue == 2 || newValue == 3 {
                 tempSelection = newValue
                 showLoginSheet = true
                 selection = oldValue

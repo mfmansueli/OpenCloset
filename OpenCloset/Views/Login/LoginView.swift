@@ -42,7 +42,7 @@ struct LoginView: View {
             Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
         }
         .fullScreenCover(isPresented: $viewModel.showRegister) {
-            RegisterView(name: viewModel.name, surname: viewModel.surname, email: viewModel.email, profileImageURL: viewModel.profileImageURL)
+            RegisterView(id: viewModel.id, name: viewModel.name, surname: viewModel.surname, email: viewModel.email, profileImageURL: viewModel.profileImageURL)
         }
         .fullScreenCover(isPresented: $viewModel.isLoading) {
             ProgressView("Loading...")

@@ -12,8 +12,8 @@ struct RegisterView: View {
     @ObservedObject var viewModel: RegisterViewModel
     @Environment(\.presentationMode) var presentationMode
     
-    init(name: String, surname: String, email: String, profileImageURL: String?) {
-        viewModel = RegisterViewModel(name: name, surname: surname, email: email, profileImageURL: profileImageURL)
+    init(id: String, name: String, surname: String, email: String, profileImageURL: String?) {
+        viewModel = RegisterViewModel(id: id, name: name, surname: surname, email: email, profileImageURL: profileImageURL)
     }
     
     var body: some View {
@@ -120,5 +120,5 @@ struct RegisterView: View {
 }
 
 #Preview {
-    RegisterView(name: "", surname: "", email: "", profileImageURL: "")
+    RegisterView(id: "", name: "", surname: "", email: "", profileImageURL: "")
 }

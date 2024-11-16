@@ -9,9 +9,9 @@ import Firebase
 import FirebaseStorage
 import FirebaseAuth
 
-
 class RegisterViewModel: ObservableObject {
     
+    var id: String
     @Published var profileImage: UIImage? { didSet { profileImageURL = nil } }
     @Published var email: String = ""
     @Published var name: String = ""
@@ -28,7 +28,8 @@ class RegisterViewModel: ObservableObject {
     var profileImageURL: String?
     var onRegisterCompletion: (() -> Void)?
     
-    init(name: String, surname: String, email: String, profileImageURL: String?) {
+    init(id: String, name: String, surname: String, email: String, profileImageURL: String?) {
+        self.id = id
         self.name = name
         self.surname = surname
         self.email = email
@@ -82,21 +83,22 @@ class RegisterViewModel: ObservableObject {
         let collection = Firestore.firestore().collection("Profiles")
         
         var profileData: [String: Any] = [
-            "name": self.name,
-            "surname": self.surname,
-            "email": self.email,
-            "about": self.about
+            "name": name,
+            "surname": surname,
+            "email": email,
+            "about": about
         ]
         
         if let imageUrl = profileImageURL {
             profileData["profileImageURL"] = imageUrl
         }
         
-        collection.addDocument(data: profileData) { [weak self] error in
+        let profile = Profile(name: name, surname: surname, email: email, about: about, profileImageURL: profileImageURL ?? "")
+        collection.document(id).setData(profileData) { [weak self] error in
             if let error = error {
                 print("Error adding document: \(error.localizedDescription)")
             } else {
-                print("Document added successfully!")
+                AppDefault.saveObject(value: profile, key: .userProfile)
                 self?.onRegisterCompletion?()
             }
         }

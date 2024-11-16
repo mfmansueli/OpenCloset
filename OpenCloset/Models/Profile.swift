@@ -13,7 +13,7 @@
  **/
 import Foundation
 
-struct Profile: Identifiable, Decodable {
+struct Profile: Identifiable, Decodable, Encodable {
     var id: String = UUID().uuidString
     var name: String
     var surname: String
