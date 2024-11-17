@@ -27,7 +27,7 @@ struct RegisterView: View {
                                 .scaledToFill()
                                 .frame(width: 250, height: 250)
                                 .clipShape(Circle())
-                                .overlay(Circle().strokeBorder(Color.yellow, lineWidth: 4)
+                                .overlay(Circle().strokeBorder(Color.textTitle, lineWidth: 4)
                                     .frame(width: 250, height: 250))
                                 .padding(.bottom, 48)
                                 .onTapGesture {
@@ -41,23 +41,23 @@ struct RegisterView: View {
                                 .scaledToFill()
                                 .frame(width: 250, height: 250)
                                 .clipShape(Circle())
-                                .overlay(Circle().strokeBorder(Color.yellow, lineWidth: 4)
+                                .overlay(Circle().strokeBorder(Color.textTitle, lineWidth: 4)
                                     .frame(width: 250, height: 250))
                                 .padding(.bottom, 48)
                                 .onTapGesture {
                                     viewModel.showPhotoOptions = true
                                 }
                         } else {
-                            // Default overlay when no profile image is available
                             Circle()
-                                .strokeBorder(Color.yellow, lineWidth: 4)
+                                .strokeBorder(Color.textTitle, lineWidth: 4)
                                 .background(Circle().foregroundColor(.white))
                                 .overlay(
                                     Image(systemName: "person.crop.circle.badge.plus")
                                         .resizable()
                                         .scaledToFit()
-                                        .foregroundColor(.orange)
+                                        .foregroundColor(.textTitle)
                                         .padding(80)
+                                        .padding(.trailing, 16)
                                         .onTapGesture {
                                             viewModel.showPhotoOptions = true
                                         }
@@ -88,7 +88,27 @@ struct RegisterView: View {
                     ClearableTextField(text: $viewModel.email, placeholder: "Email", errorMessage: viewModel.emailError, keyboardType: .emailAddress, textContentType: .emailAddress)
                     ClearableTextField(text: $viewModel.name, placeholder: "Name", errorMessage: viewModel.nameError, textContentType: .givenName)
                     ClearableTextField(text: $viewModel.surname, placeholder: "Surname", errorMessage: viewModel.surnameError, textContentType: .familyName)
-                    ClearableTextField(text: $viewModel.about, placeholder: "About you")
+                    
+                    TextEditor(text: $viewModel.about)
+                        .frame(height: 100)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(4)
+                        .padding(.leading, 16)
+                        .padding(.top, 8)
+                        .scrollContentBackground(.hidden)
+                        .background {
+                            ZStack(alignment: .topLeading) {
+                                if viewModel.about.isEmpty {
+                                    Text("About you")
+                                        .padding(.leading, 19)
+                                        .padding(.top, 16)
+                                        .foregroundStyle(.gray.opacity(0.6))
+                                }
+                                RoundedRectangle(cornerRadius: 0)
+                                    .foregroundStyle(Color.gray.opacity(0.2))
+                            }
+                        }
+                    
                     
                     Spacer()
                     
@@ -96,7 +116,6 @@ struct RegisterView: View {
                         viewModel.register()
                     }.buttonStyle(PrimaryButtonStyle())
                 }
-                .padding(.top, 16)
             }
             .scrollDismissesKeyboard(.immediately)
             .navigationBarTitle("Register", displayMode: .inline)
@@ -111,8 +130,20 @@ struct RegisterView: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $viewModel.isLoading) {
+            ProgressView("Loading...")
+                .padding()
+                .background(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 10)
+                .presentationBackground(.black.opacity(0.4))
+        }
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
+        }
         .onAppear {
             viewModel.onRegisterCompletion = {
+                presentationMode.wrappedValue.dismiss()
                 presentationMode.wrappedValue.dismiss()
             }
         }

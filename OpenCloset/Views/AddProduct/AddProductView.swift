@@ -8,6 +8,7 @@ import SwiftUI
 
 struct AddProductView: View {
     @ObservedObject var viewModel: AddProductViewModel = AddProductViewModel()
+    @Environment(\.presentationMode) var presentationMode
     
     let conditions = ["Excellent condition", "Gently used", "Still in good condition"]
     
@@ -39,6 +40,24 @@ struct AddProductView: View {
                         ImagePickerView(images: $viewModel.productImageList, image: .constant(nil), allowMultipleSelection: true)
                     })
                 
+                VStack(alignment: .leading) {
+                    Text("Item name")
+                        .font(.headline)
+                    
+                    TextField("Stylish Sweater", text: $viewModel.name)
+                        .frame(maxWidth: .infinity, maxHeight: 30)
+                        .padding()
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(20)
+                    
+                    if let errorMessage = viewModel.itemNameError, !errorMessage.isEmpty {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                            .padding(.leading, 8)
+                            .padding(.bottom, 4)
+                    }
+                }
                 
                 // Text Field for Description
                 VStack(alignment: .leading) {
@@ -55,6 +74,14 @@ struct AddProductView: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .foregroundStyle(Color.gray.opacity(0.2))
                         }
+                    
+                    if let errorMessage = viewModel.itemDescriptionError, !errorMessage.isEmpty {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                            .padding(.leading, 8)
+                            .padding(.bottom, 4)
+                    }
                 }
                 
                 // Size and Condition Pickers
@@ -68,6 +95,14 @@ struct AddProductView: View {
                             .padding()
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(20)
+                        
+                        if let errorMessage = viewModel.sizeError, !errorMessage.isEmpty {
+                            Text(errorMessage)
+                                .foregroundColor(.red)
+                                .font(.caption)
+                                .padding(.leading, 8)
+                                .padding(.bottom, 4)
+                        }
                     }
                     
                     VStack(alignment: .leading) {
@@ -83,6 +118,14 @@ struct AddProductView: View {
                         .padding()
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(20)
+                        
+                        if let errorMessage = viewModel.sizeError, !errorMessage.isEmpty {
+                            Text(errorMessage)
+                                .foregroundColor(.clear)
+                                .font(.caption)
+                                .padding(.leading, 8)
+                                .padding(.bottom, 4)
+                        }
                     }
                 }
                 
@@ -112,9 +155,26 @@ struct AddProductView: View {
                 
                 Spacer()
             }.padding(16)
-        }
+                .fullScreenCover(isPresented: $viewModel.isLoading) {
+                    ProgressView("Loading...")
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .shadow(radius: 10)
+                        .presentationBackground(.black.opacity(0.4))
+                }
+                .alert(isPresented: $viewModel.showAlert) {
+                    Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
+                }
+                .onAppear {
+                    viewModel.onAddProductCompletion = {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+        }.scrollDismissesKeyboard(.immediately)
     }
 }
+
 
 #Preview {
     AddProductView()

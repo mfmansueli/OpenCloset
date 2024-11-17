@@ -9,12 +9,12 @@ import SwiftUI
 import FirebaseAuth
 
 struct MainView: View {
-    @State private var selection: Int = 1
+    @StateObject private var tabSelection = TabSelection()
     @State private var showLoginSheet: Bool = false
     @State private var tempSelection: Int? = nil
     
     var body: some View {
-        TabView(selection: $selection) {
+        TabView(selection: $tabSelection.selectedTab) {
             HomeView().tabItem {
                 Label("home", systemImage: "tshirt")
             }.tag(1)
@@ -32,7 +32,8 @@ struct MainView: View {
                                 Button("", systemImage: "rectangle.portrait.and.arrow.right") {
                                     do {
                                         try Auth.auth().signOut()
-                                        selection = 1
+                                        AppDefault.removeObject(forKey: .userProfile)
+                                        tabSelection.selectedTab = 1
                                     } catch {
                                         
                                     }
@@ -46,16 +47,17 @@ struct MainView: View {
                 Label("profile", systemImage: "person.crop.circle")
             }.tag(3)
         }
-        .onChange(of: selection, { oldValue, newValue in
+        .onChange(of: tabSelection.selectedTab, { oldValue, newValue in
             if AppDefault.loadObject(type: Profile.self, key: .userProfile) == nil, newValue == 2 || newValue == 3 {
                 tempSelection = newValue
                 showLoginSheet = true
-                selection = oldValue
+                tabSelection.selectedTab = oldValue
             }
         })
         .sheet(isPresented: $showLoginSheet) {
-            LoginView(selection: $selection).presentationDetents([.medium, .large])
+            LoginView(selection: $tabSelection.selectedTab).presentationDetents([.medium, .large])
         }
+        .environmentObject(tabSelection)
     }
 }
 

@@ -23,10 +23,12 @@ class LoginViewModel: ObservableObject {
     var name = ""
     var surname = ""
     var profileImageURL = ""
+    var onLoginCompletion: (() -> Void)?
     
     init(selection: Binding<Int>) {
         self.selection = selection
     }
+    
     func loginWithFacebook() {
         do {
             try Auth.auth().signOut()
@@ -70,9 +72,9 @@ class LoginViewModel: ObservableObject {
                 self.showAlert(message: "Failed to fetch user profile: \(error.localizedDescription)")
                 return
             }
-            
+        
             if let userData = result as? [String: Any] {
-                self.id = userData["id"] as? String ?? ""
+                self.id = Auth.auth().currentUser?.uid ?? ""
                 self.email = userData["email"] as? String ?? ""
                 self.name = userData["first_name"] as? String ?? ""
                 self.surname = userData["last_name"] as? String ?? ""
@@ -86,11 +88,13 @@ class LoginViewModel: ObservableObject {
                         return
                     }
                     
+                    self.isLoading = false
                     if let document = document, document.exists {
                         do {
                             var profile = try document.data(as: Profile.self)
                             profile.id = document.documentID
                             AppDefault.saveObject(value: profile, key: .userProfile)
+                            self.onLoginCompletion?()
                         } catch(let error) {
                             self.showAlert(message: "Error decoding profile: \(error.localizedDescription)")
                         }
@@ -98,7 +102,6 @@ class LoginViewModel: ObservableObject {
                     }
                     
                     self.showRegister = true
-                    self.isLoading = false
                 }
             }
         }

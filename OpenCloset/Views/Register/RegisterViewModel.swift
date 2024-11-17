@@ -24,6 +24,9 @@ class RegisterViewModel: ObservableObject {
     @Published var emailError: String?
     @Published var nameError: String?
     @Published var surnameError: String?
+    @Published var showAlert: Bool = false
+    @Published var alertMessage: String = ""
+    @Published var isLoading = false
     
     var profileImageURL: String?
     var onRegisterCompletion: (() -> Void)?
@@ -41,6 +44,7 @@ class RegisterViewModel: ObservableObject {
             return
         }
         
+        isLoading = true
         if let image = profileImage {
             let imageName = UUID().uuidString
             let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(imageName).jpg")
@@ -51,28 +55,29 @@ class RegisterViewModel: ObservableObject {
                 
                 let storageRef = Storage.storage().reference().child("profile_images/\(imageName).jpg")
                 
-                storageRef.putFile(from: fileURL, metadata: nil) { metadata, error in
+                
+                storageRef.putFile(from: fileURL, metadata: nil) { [weak self] metadata, error in
                     if let error = error {
-                        print("Error uploading file: \(error.localizedDescription)")
+                        self?.showAlert(message: "Error uploading file: \(error.localizedDescription)")
                         return
                     }
                     
                     storageRef.downloadURL { url, error in
                         if let error = error {
-                            print("Error getting download URL: \(error.localizedDescription)")
+                            self?.showAlert(message: "Error getting download URL: \(error.localizedDescription)")
                             return
                         }
                         
                         guard let downloadURL = url else {
-                            print("Download URL not found")
+                            self?.showAlert(message: "Download URL not found")
                             return
                         }
                         
-                        self.saveProfileData(profileImageURL: downloadURL.absoluteString)
+                        self?.saveProfileData(profileImageURL: downloadURL.absoluteString)
                     }
                 }
             } catch {
-                print("Error writing image to file: \(error.localizedDescription)")
+                showAlert(message: "Error writing image to file: \(error.localizedDescription)")
             }
         } else {
             self.saveProfileData(profileImageURL: profileImageURL)
@@ -96,8 +101,9 @@ class RegisterViewModel: ObservableObject {
         let profile = Profile(name: name, surname: surname, email: email, about: about, profileImageURL: profileImageURL ?? "")
         collection.document(id).setData(profileData) { [weak self] error in
             if let error = error {
-                print("Error adding document: \(error.localizedDescription)")
+                self?.showAlert(message: "Error adding document: \(error.localizedDescription)")
             } else {
+                self?.isLoading = false
                 AppDefault.saveObject(value: profile, key: .userProfile)
                 self?.onRegisterCompletion?()
             }
@@ -138,5 +144,11 @@ class RegisterViewModel: ObservableObject {
         let emailRegEx = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,64}$"
         let emailPredicate = NSPredicate(format:"SELF MATCHES[c] %@", emailRegEx)
         return emailPredicate.evaluate(with: email)
+    }
+    
+    func showAlert(message: String) {
+        alertMessage = message
+        showAlert = true
+        isLoading = false
     }
 }

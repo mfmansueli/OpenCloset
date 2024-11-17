@@ -20,6 +20,16 @@ struct Profile: Identifiable, Decodable, Encodable {
     var email: String
     var about: String
     var profileImageURL: String
+    var distance: String = ""
+    
+    init(id: String = UUID().uuidString, name: String, surname: String, email: String, about: String, profileImageURL: String) {
+        self.id = id
+        self.name = name
+        self.surname = surname
+        self.email = email
+        self.about = about
+        self.profileImageURL = profileImageURL
+    }
     
     private enum CodingKeys: String, CodingKey {
         case name

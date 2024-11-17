@@ -52,6 +52,11 @@ struct LoginView: View {
                 .shadow(radius: 10)
                 .presentationBackground(.black.opacity(0.4))
         }
+        .onAppear {
+            viewModel.onLoginCompletion = {
+                presentationMode.wrappedValue.dismiss()
+            }
+        }
     }
 }
 
