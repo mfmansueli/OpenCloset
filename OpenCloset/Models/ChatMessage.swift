@@ -9,13 +9,15 @@ import FirebaseDatabase
 
 struct ChatMessage: Identifiable, Codable {
     var id: String
-    var sender: String
+    var senderID: String
+    var senderImageURL: String
     var content: String
     var timestamp: TimeInterval
     
-    init(id: String = UUID().uuidString, sender: String, content: String, timestamp: TimeInterval = Date().timeIntervalSince1970) {
+    init(id: String = UUID().uuidString, senderID: String, senderImageURL: String, content: String, timestamp: TimeInterval = Date().timeIntervalSince1970) {
         self.id = id
-        self.sender = sender
+        self.senderID = senderID
+        self.senderImageURL = senderImageURL
         self.content = content
         self.timestamp = timestamp
     }
@@ -23,20 +25,23 @@ struct ChatMessage: Identifiable, Codable {
     init?(snapshot: DataSnapshot) {
         guard
             let value = snapshot.value as? [String: AnyObject],
-            let sender = value["sender"] as? String,
+            let senderID = value["senderID"] as? String,
+            let senderImageURL = value["senderImageURL"] as? String,
             let content = value["content"] as? String,
             let timestamp = value["timestamp"] as? TimeInterval else {
             return nil
         }
         self.id = snapshot.key
-        self.sender = sender
+        self.senderID = senderID
+        self.senderImageURL = senderImageURL
         self.content = content
         self.timestamp = timestamp
     }
     
     func toDictionary() -> [String: Any] {
         return [
-            "sender": sender,
+            "senderID": senderID,
+            "senderImageURL": senderImageURL,
             "content": content,
             "timestamp": timestamp
         ]

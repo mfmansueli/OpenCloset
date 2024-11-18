@@ -9,67 +9,74 @@ import SwiftUI
 import Kingfisher
 
 struct ChatHeaderView: View {
-    @ObservedObject var viewModel: ChatHeaderViewModel
+    @StateObject var viewModel: ChatHeaderViewModel = ChatHeaderViewModel()
     var productId: String = ""
     
     init(productId: String = "") {
-        self.viewModel = ChatHeaderViewModel(productId: productId)
+        self.productId = productId
     }
     
     var body: some View {
-        if let product = viewModel.product {
-            NavigationLink {
-                ProductView(product: product)
-            } label: {
-                VStack {
-                    Divider()
-                        .frame(height: 1)
-                        .background(Color("LinePink"))
-                    
-                    HStack {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.gray.opacity(0.3))
-                                .frame(width: 80, height: 80)
-                            
-                            KFImage(URL(string: viewModel.product?.imageURLs.first ?? ""))
-                                .resizable()
-                                .placeholder({
-                                    Image(systemName: "hanger")
-                                })
-                                .scaledToFill()
-                                .frame(width: 80, height: 80)
-                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                            
-                        }
+        VStack {
+            if let product = viewModel.product {
+                HStack {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(width: 80, height: 80)
                         
-                        VStack(alignment: .leading) {
-                            Text(product.name)
-                                .font(.title2)
-                                .foregroundColor(.black)
-                                .multilineTextAlignment(.leading)
-                            
-                            Text(product.itemDescription)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                                .multilineTextAlignment(.leading)
-                        }
+                        KFImage(URL(string: viewModel.product?.imageURLs.first ?? ""))
+                            .resizable()
+                            .fade(duration: 0.25)
+                            .placeholder{
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: Color.accent))
+                            }
+                            .scaledToFill()
+                            .frame(width: 80, height: 80)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
                         
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.all)
                     
+                    VStack(alignment: .leading) {
+                        Text(product.name)
+                            .font(.title2)
+                            .foregroundColor(.black)
+                            .multilineTextAlignment(.leading)
+                        
+                        Text(product.itemDescription)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.leading)
+                    }
                     
-                    Divider()
-                        .frame(height: 1)
-                        .background(Color("LinePink"))
+                    Button("Confirm\nSwap") {
+                    }
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(16)
+                    .background(Color.lightAccent)
+                    .cornerRadius(26)
+                    .padding(.horizontal, 16)
+                    
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.all)
+                
+                
+                Divider()
+                    .frame(height: 1)
+                    .background(Color("LinePink"))
+            } else {
+                ProgressView("Loading product ...")
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
             }
+        }.onAppear {
+            viewModel.loadProduct(productID: productId)
         }
-             ProgressView("Loading product ...")
-                .padding()
-                .background(Color.white)
-                .cornerRadius(10)
     }
 }
 

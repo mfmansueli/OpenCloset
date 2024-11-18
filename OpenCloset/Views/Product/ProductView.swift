@@ -9,8 +9,9 @@ import SwiftUI
 import Kingfisher
 
 struct ProductView: View {
-    
+    @EnvironmentObject var tabSelection: TabSelection
     var product: Product
+    var owner: Profile
     
     var body: some View {
         VStack {
@@ -78,7 +79,15 @@ struct ProductView: View {
                 if let loggedUserProfile = AppDefault.loadObject(type: Profile.self, key: .userProfile),
                    loggedUserProfile.id != product.userID {
                     Button {
+                        tabSelection.productID = product.id
+                        tabSelection.ownerID = product.userID
+                        tabSelection.ownerImageURL = owner.profileImageURL
+                        tabSelection.ownerName = owner.name
                         
+                        tabSelection.requestID = loggedUserProfile.id
+                        tabSelection.requestImageURL = loggedUserProfile.profileImageURL
+                        tabSelection.requestName = loggedUserProfile.name
+                        tabSelection.selectedTab = 2
                     } label: {
                         Text("Ask Info ♡")
                             .fontWeight(.bold)
@@ -98,5 +107,6 @@ struct ProductView: View {
 
 
 #Preview {
-    ProductView(product: Product(userID: "12345", name: "Hat", size: "M", condition: "New", itemDescription: "This is a hat", imageURLs: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png", "https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png", "https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonate: true, isSwap: false))
+    ProductView(product: Product(userID: "12345", name: "Hat", size: "M", condition: "New", itemDescription: "This is a hat", imageURLs: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png", "https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png", "https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonate: true, isSwap: false),
+                owner: Profile(id: "12345", name: "Mateus", surname: "Santos", email: "", about: "", profileImageURL: "https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"))
 }

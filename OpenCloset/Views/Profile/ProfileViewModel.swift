@@ -16,12 +16,7 @@ class ProfileViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var showAlert: Bool = false
     
-    init() {
-        fetchProducts()
-    }
-    
-    func fetchProducts() {
-        let userID = Auth.auth().currentUser?.uid ?? ""
+    func fetchProducts(userID: String) {
         let collection: Query = Firestore.firestore().collection("Products").whereField("userID", isEqualTo: userID)
         isLoading = true
         collection.getDocuments { [weak self] (snapshot, error) in

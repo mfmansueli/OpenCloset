@@ -50,5 +50,40 @@ class ChatChannelViewModel: ObservableObject {
             }
         }
     }
+    
+    func createChatChannel(productID: String, ownerID: String, requestID: String, ownerImageURL: String, requestImageURL: String, ownerName: String, requestName: String) {
+        guard !productID.isEmpty,
+              !ownerID.isEmpty,
+              !requestID.isEmpty,
+              !ownerImageURL.isEmpty,
+              !requestImageURL.isEmpty,
+              !ownerName.isEmpty,
+              !requestName.isEmpty else {
+            print("Error: All fields must be filled")
+            return
+        }
+        
+        let channelID = UUID().uuidString
+        
+        let newChannel: [String: Any] = [
+            "id": channelID,
+            "productID": productID,
+            "ownerID": ownerID,
+            "requestID": requestID,
+            "ownerImageURL": ownerImageURL,
+            "requestImageURL": requestImageURL,
+            "ownerName": ownerName,
+            "requestName": requestName,
+            "timestamp": Date().timeIntervalSince1970
+        ]
+        
+        let ref = Database.database().reference().child("channels").child(channelID)
+        ref.setValue(newChannel) { error, _ in
+            if let error = error {
+                print("Error creating channel: \(error.localizedDescription)")
+            } else {
+                print("Channel created successfully!")
+            }
+        }
+    }
 }
-

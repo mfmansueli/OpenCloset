@@ -20,6 +20,7 @@ struct ProfileView: View {
     
     init(profile: Profile) {
         self.profile = profile
+        self.viewModel.fetchProducts(userID: profile.id)
     }
     
     var body: some View {
@@ -69,12 +70,12 @@ struct ProfileView: View {
                     Spacer()
                 }
             } else if viewModel.productList.isEmpty {
-                EmptyStateView(imageName: "hanger", subtext: "Your Open Closet is empty")
+                EmptyStateView(imageName: "hanger", subtext: emptyStateMessage)
             } else {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 10) {
                         ForEach(viewModel.productList, id: \.self) { product in
-                            NavigationLink(destination: ProductView(product: product)) {
+                            NavigationLink(destination: ProductView(product: product, owner: profile)) {
                                 KFImage(URL(string: product.imageURLs.first ?? ""))
                                     .resizable()
                                     .fade(duration: 0.25)
@@ -94,8 +95,7 @@ struct ProfileView: View {
             }
             
             Spacer()
-            if let loggedUserProfile = AppDefault.loadObject(type: Profile.self, key: .userProfile),
-               loggedUserProfile.id == profile.id {
+            if isCurrentUser {
                 NavigationLink(destination: AddProductView(onAddProductCompletion:
                                                             { product in
                     viewModel.addProduct(product: product)
@@ -107,18 +107,23 @@ struct ProfileView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .allowsHitTesting(false)
                 }
-            } else {
-                Button(action: {
-                    // Action for Ask Info
-                }) {
-                    Text("Ask Info ♡")
-                }
-                .buttonStyle(PrimaryButtonStyle())
             }
         }
         .alert(isPresented: $viewModel.showAlert) {
             Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
         }
+    }
+    
+    var isCurrentUser: Bool {
+        if let loggedUserProfile = AppDefault.loadObject(type: Profile.self, key: .userProfile),
+           loggedUserProfile.id == profile.id {
+            return true
+        }
+        return false
+    }
+    
+    var emptyStateMessage: String {
+        isCurrentUser ? "Your Open Closet is empty" : "\(profile.name)'s Open Closet is empty."
     }
 }
 

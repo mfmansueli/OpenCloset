@@ -8,15 +8,21 @@
 import SwiftUI
 
 struct ChatBubbleView: View {
-    var message: String = "Ciao bella bionda!"
-    var backgroundColor: Color = Color("LinePink")
+    var message: String = ""
     var alignment: Alignment
     var body: some View {
         Text(message)
             .padding(10)
-            .background(backgroundColor)
+            .background(.linePink)
             .foregroundColor(.black)
-            .cornerRadius(15)
+            .clipShape(
+                .rect(
+                    topLeadingRadius: 16,
+                    bottomLeadingRadius: alignment == .leading ? 0 : 16,
+                    bottomTrailingRadius: alignment == .trailing ? 0 : 16,
+                    topTrailingRadius: 16
+                )
+            )
             .frame(maxWidth: 250, alignment: alignment)
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
@@ -24,5 +30,5 @@ struct ChatBubbleView: View {
 }
 
 #Preview {
-    ChatBubbleView(alignment: .trailing)
+    ChatBubbleView(message: "Ciao bella bionda!", alignment: .trailing)
 }

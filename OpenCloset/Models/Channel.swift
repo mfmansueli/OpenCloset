@@ -9,23 +9,49 @@ import FirebaseDatabase
 
 struct Channel: Identifiable, Codable {
     var id: String
-    var name: String
+    var productID: String
+    var ownerID: String
+    var requestID: String
+    var ownerImageURL: String
+    var requestImageURL: String
+    var ownerName: String
+    var requestName: String
     var lastMessage: ChatMessage?
     var messages: [ChatMessage]
     
-    init(id: String = UUID().uuidString, name: String, messages: [ChatMessage] = []) {
+    init(id: String, productID: String, ownerID: String, requestID: String, ownerImageURL: String, requestImageURL: String, ownerName: String, requestName: String, messages: [ChatMessage] = []) {
         self.id = id
-        self.name = name
+        self.productID = productID
+        self.ownerID = ownerID
+        self.requestID = requestID
+        self.ownerImageURL = ownerImageURL
+        self.requestImageURL = requestImageURL
+        self.ownerName = ownerName
+        self.requestName = requestName
+        self.lastMessage = nil
         self.messages = messages
     }
     
     init?(snapshot: DataSnapshot) {
         guard let value = snapshot.value as? [String: AnyObject],
-              let name = value["name"] as? String else {
+              let productID = value["productID"] as? String,
+              let ownerID = value["ownerID"] as? String,
+              let requestID = value["requestID"] as? String,
+              let ownerImageURL = value["ownerImageURL"] as? String,
+              let requestImageURL = value["requestImageURL"] as? String,
+              let ownerName = value["ownerName"] as? String,
+              let requestName = value["requestName"] as? String else {
             return nil
         }
         self.id = snapshot.key
-        self.name = name
-        self.messages = []
+        self.productID = productID
+        self.ownerID = ownerID
+        self.requestID = requestID
+        self.ownerImageURL = ownerImageURL
+        self.requestImageURL = requestImageURL
+        self.ownerName = ownerName
+        self.requestName = requestName
+        self.lastMessage = nil // Will be fetched separately
+        self.messages = [] // Messages will be fetched separately
     }
 }

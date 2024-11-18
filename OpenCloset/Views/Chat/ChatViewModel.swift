@@ -16,7 +16,7 @@ class ChatViewModel: ObservableObject {
     
     func fetchMessages(for channelID: String) {
         messagesRef = ref.child("channels").child(channelID).child("messages")
-        messagesRef?.observe(.value) { snapshot in
+        messagesRef?.queryOrdered(byChild: "timestamp").observe(.value) { snapshot in
             var newMessages: [ChatMessage] = []
             for child in snapshot.children {
                 if let snapshot = child as? DataSnapshot,
@@ -28,15 +28,13 @@ class ChatViewModel: ObservableObject {
         }
     }
     
-    func sendMessage(to channelID: String, sender: String, content: String) {
-        let message = ChatMessage(sender: sender, content: content)
+    func sendMessage(for channelID: String) {
+        if message.isEmpty { return }
+        guard let loggedUserProfile = AppDefault.loadObject(type: Profile.self, key: .userProfile) else { return }
+    
+        let message = ChatMessage(senderID: loggedUserProfile.id, senderImageURL: loggedUserProfile.profileImageURL, content: message)
         let messageRef = ref.child("channels").child(channelID).child("messages").child(message.id)
         messageRef.setValue(message.toDictionary())
-    }
-    
-    func createChannel(name: String) {
-        let newChannel = Channel(name: name)
-        let channelRef = ref.child("channels").child(newChannel.id)
-        channelRef.setValue(["name": name])
+        self.message = ""
     }
 }
