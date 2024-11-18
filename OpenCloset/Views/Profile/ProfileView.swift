@@ -75,16 +75,17 @@ struct ProfileView: View {
                     LazyVGrid(columns: columns, spacing: 10) {
                         ForEach(viewModel.productList, id: \.self) { product in
                             NavigationLink(destination: ProductView(product: product)) {
-                                KFImage(URL(string: product.imageURLs.first ?? "")) //uso KFImage per caricare l'immagine in ogni cella della griglia
-                                    .placeholder({
-                                        Image(systemName: "hanger")
-                                    })
+                                KFImage(URL(string: product.imageURLs.first ?? ""))
                                     .resizable()
-                                    .scaledToFill() // per scalare l'immagine
-                                    .frame(height: 160) // per l'altezza del rettangolo nella griglia
+                                    .fade(duration: 0.25)
+                                    .placeholder{
+                                        ProgressView()
+                                            .progressViewStyle(CircularProgressViewStyle(tint: Color.accent))
+                                    }
+                                    .scaledToFill()
+                                    .frame(height: 160)
+                                    .shadow(radius: 10)
                                     .cornerRadius(20)
-                                
-                                    .cornerRadius(10)
                             }
                         }
                     }
@@ -95,7 +96,10 @@ struct ProfileView: View {
             Spacer()
             if let loggedUserProfile = AppDefault.loadObject(type: Profile.self, key: .userProfile),
                loggedUserProfile.id == profile.id {
-                NavigationLink(destination: AddProductView()) {
+                NavigationLink(destination: AddProductView(onAddProductCompletion:
+                                                            { product in
+                    viewModel.addProduct(product: product)
+                })) {
                     Button(action: {
                     }) {
                         Text("Add clothes")
@@ -114,9 +118,6 @@ struct ProfileView: View {
         }
         .alert(isPresented: $viewModel.showAlert) {
             Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
-        }
-        .onAppear {
-                viewModel.fetchProducts()
         }
     }
 }

@@ -19,7 +19,7 @@ struct MainView: View {
                 Label("home", systemImage: "tshirt")
             }.tag(1)
             
-            ChatView().tabItem {
+            ChatChannelView().tabItem {
                 Label("chat", systemImage: "envelope")
             }
             .tag(2)

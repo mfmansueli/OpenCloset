@@ -32,7 +32,7 @@ class AddProductViewModel: ObservableObject {
     @Published var itemNameError: String?
     @Published var itemDescriptionError: String?
     @Published var sizeError: String?
-    var onAddProductCompletion: (() -> Void)?
+    var onAddProductCompletion: ((_ product: Product) -> Void)?
     @Published var productImage: UIImage? {
         didSet {
             if let productImage = productImage {
@@ -64,7 +64,7 @@ class AddProductViewModel: ObservableObject {
         isLoading = true
         for (indoex, image) in productImageList.enumerated() {
             let storageRef = storage.reference().child("product_images/\(UUID().uuidString).jpg")
-            if let imageData = image.jpegData(compressionQuality: 0.3) {
+            if let imageData = image.jpegData(compressionQuality: 0.1) {
                 storageRef.putData(imageData, metadata: nil) { [weak self] (metadata, error) in
                     if let error = error {
                         self?.showAlert(message: "Error uploading image: \(error.localizedDescription)")
@@ -105,7 +105,15 @@ class AddProductViewModel: ObservableObject {
             if let error = error {
                 self?.showAlert(message: "Error adding document: \(error.localizedDescription)")
             } else {
-                self?.onAddProductCompletion?()
+                let product = Product(userID: Auth.auth().currentUser?.uid ?? "",
+                                      name: self?.name ?? "",
+                                      size: self?.size ?? "",
+                                      condition: self?.selectedCondition ?? "",
+                                      itemDescription: self?.itemDescription ?? "",
+                                      imageURLs: imagesURLs,
+                                      isDonate: self?.isDonate ?? false,
+                                      isSwap: self?.isSwap ?? false)
+                self?.onAddProductCompletion?(product)
             }
         }
     }

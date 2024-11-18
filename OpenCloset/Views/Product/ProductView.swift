@@ -14,29 +14,28 @@ struct ProductView: View {
     
     var body: some View {
         VStack {
-            
-                TabView {
-                    ForEach(product.imageURLs, id: \.self) { imageUrl in
-                        KFImage(URL(string: imageUrl))
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                            .shadow(radius: 5)
-                    }
+            TabView {
+                ForEach(product.imageURLs, id: \.self) { imageUrl in
+                    KFImage(URL(string: imageUrl))
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .shadow(radius: 5)
                 }
-                .frame(height: 350)
-                .tabViewStyle(PageTabViewStyle())
+            }
+            .frame(height: 350)
+            .tabViewStyle(PageTabViewStyle())
             
             // Hat title
             VStack(alignment: .leading) {
                 Text(product.name)
                     .font(.title)
                     .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 
                 // Action buttons
-                
-                if product.isSwap, !product.isDonate {
+                if product.isSwap || product.isDonate {
                     HStack {
                         if product.isSwap {
                             Text("Swap")
@@ -65,7 +64,7 @@ struct ProductView: View {
                 // Details about the hat
                 Text("Condition: \(product.condition)")
                 Text("Size: \(product.size)")
-            
+                
                 VStack(alignment: .leading) {
                     Text("Item description")
                         .font(.headline)
@@ -91,6 +90,7 @@ struct ProductView: View {
                     .buttonStyle(.borderedProminent)
                 }
             }
+            .frame(maxWidth: .infinity)
         }
         .padding()
     }

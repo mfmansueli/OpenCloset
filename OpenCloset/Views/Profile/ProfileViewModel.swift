@@ -16,6 +16,10 @@ class ProfileViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var showAlert: Bool = false
     
+    init() {
+        fetchProducts()
+    }
+    
     func fetchProducts() {
         let userID = Auth.auth().currentUser?.uid ?? ""
         let collection: Query = Firestore.firestore().collection("Products").whereField("userID", isEqualTo: userID)
@@ -42,6 +46,10 @@ class ProfileViewModel: ObservableObject {
         alertMessage = message
         showAlert = true
         isLoading = false
+    }
+    
+    func addProduct(product: Product) {
+        productList.append(product)
     }
 }
 

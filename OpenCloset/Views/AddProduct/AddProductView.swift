@@ -10,7 +10,12 @@ struct AddProductView: View {
     @ObservedObject var viewModel: AddProductViewModel = AddProductViewModel()
     @Environment(\.presentationMode) var presentationMode
     
+    var onAddProductCompletion: ((_ product: Product) -> Void)?
     let conditions = ["Excellent condition", "Gently used", "Still in good condition"]
+    
+    init(onAddProductCompletion: ((_ product: Product) -> Void)?) {
+        self.onAddProductCompletion = onAddProductCompletion
+    }
     
     var body: some View {
         ScrollView {
@@ -167,7 +172,8 @@ struct AddProductView: View {
                     Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
                 }
                 .onAppear {
-                    viewModel.onAddProductCompletion = {
+                    viewModel.onAddProductCompletion = { product in
+                        onAddProductCompletion?(product)
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
@@ -177,5 +183,5 @@ struct AddProductView: View {
 
 
 #Preview {
-    AddProductView()
+    AddProductView(onAddProductCompletion: { product in })
 }
