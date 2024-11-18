@@ -32,6 +32,10 @@ struct LoginView: View {
                 viewModel.loginWithFacebook()
             }
             
+            SocialLoginButton(imageName: "Google", buttonText: "Continue with Google") {
+                viewModel.loginWithGoogle()
+            }
+            
             Button("not now, thanks") {
                 presentationMode.wrappedValue.dismiss()
             }

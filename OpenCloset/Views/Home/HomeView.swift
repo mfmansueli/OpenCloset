@@ -88,6 +88,7 @@ struct ProfileItemView: View {
             Spacer()
             KFImage(URL(string: profile.profileImageURL))
                 .resizable()
+                .scaledToFill()
                 .frame(width: 90, height: 90)
                 .clipShape(Circle())
         }
