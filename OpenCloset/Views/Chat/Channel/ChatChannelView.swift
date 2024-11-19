@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ChatChannelView: View {
     @EnvironmentObject var tabSelection: TabSelection
-    @StateObject var viewModel = ChatChannelViewModel()
+    @ObservedObject var viewModel = ChatChannelViewModel()
     
     var body: some View {
         NavigationStack {
