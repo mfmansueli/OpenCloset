@@ -41,11 +41,13 @@ struct ChatHeaderView: View {
                     VStack(alignment: .leading) {
                         Text(product.name)
                             .font(.title2)
+                            .lineLimit(2)
                             .foregroundColor(.black)
                             .multilineTextAlignment(.leading)
                         
                         Text(product.itemDescription)
                             .font(.subheadline)
+                            .lineLimit(2)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.leading)
                     }

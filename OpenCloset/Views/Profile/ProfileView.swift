@@ -10,7 +10,7 @@ import Kingfisher
 import FirebaseAuth
 
 struct ProfileView: View {
-    @ObservedObject var viewModel: ProfileViewModel = ProfileViewModel()
+    @StateObject var viewModel: ProfileViewModel = ProfileViewModel()
     var profile: Profile
     
     let columns: [GridItem] = [
@@ -20,7 +20,6 @@ struct ProfileView: View {
     
     init(profile: Profile) {
         self.profile = profile
-        self.viewModel.fetchProducts(userID: profile.id)
     }
     
     var body: some View {
@@ -28,6 +27,11 @@ struct ProfileView: View {
             HStack {
                 KFImage(URL(string: profile.profileImageURL))
                     .resizable()
+                    .placeholder{
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: Color.accent))
+                    }
+                    .scaledToFill()
                     .frame(width: 130, height: 130)
                     .clipShape(Circle())
                     .overlay(Circle()
@@ -112,6 +116,9 @@ struct ProfileView: View {
         .alert(isPresented: $viewModel.showAlert) {
             Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
         }
+        .onAppear {
+            viewModel.fetchProducts(userID: profile.id)
+        }
     }
     
     var isCurrentUser: Bool {
@@ -123,7 +130,7 @@ struct ProfileView: View {
     }
     
     var emptyStateMessage: String {
-        isCurrentUser ? "Your Open Closet is empty" : "\(profile.name)'s Open Closet is empty."
+        isCurrentUser ? "Your OpenCloset is empty" : "\(profile.name)'s OpenCloset is empty."
     }
 }
 

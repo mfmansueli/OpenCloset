@@ -19,6 +19,10 @@ struct ProductView: View {
                 ForEach(product.imageURLs, id: \.self) { imageUrl in
                     KFImage(URL(string: imageUrl))
                         .resizable()
+                        .placeholder{
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: Color.accent))
+                        }
                         .scaledToFit()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: 20))

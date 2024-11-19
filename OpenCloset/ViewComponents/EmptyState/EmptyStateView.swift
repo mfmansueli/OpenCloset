@@ -33,5 +33,5 @@ struct EmptyStateView: View {
 }
 
 #Preview {
-    EmptyStateView(imageName: "hanger", subtext: "Your Open Closet is empty")
+    EmptyStateView(imageName: "hanger", subtext: "Your OpenCloset is empty")
 }

@@ -7,7 +7,7 @@
 import Foundation
 import FirebaseDatabase
 
-struct Channel: Identifiable, Codable {
+struct Channel: Identifiable, Codable, Hashable {
     var id: String
     var productID: String
     var ownerID: String
@@ -53,5 +53,13 @@ struct Channel: Identifiable, Codable {
         self.requestName = requestName
         self.lastMessage = nil // Will be fetched separately
         self.messages = [] // Messages will be fetched separately
+    }
+    
+    static func == (lhs: Channel, rhs: Channel) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

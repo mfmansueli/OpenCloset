@@ -24,6 +24,10 @@ struct RegisterView: View {
                         if let profileImageURL = viewModel.profileImageURL {
                             KFImage(URL(string: profileImageURL))
                                 .resizable()
+                                .placeholder{
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: Color.accent))
+                                }
                                 .scaledToFill()
                                 .frame(width: 250, height: 250)
                                 .clipShape(Circle())

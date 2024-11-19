@@ -9,12 +9,19 @@ import SwiftUI
 
 struct ChatChannelView: View {
     @EnvironmentObject var tabSelection: TabSelection
-    @ObservedObject var viewModel = ChatChannelViewModel()
+    @StateObject var viewModel = ChatChannelViewModel()
     
     var body: some View {
         NavigationStack {
             VStack {
-                if !viewModel.channels.isEmpty {
+                if viewModel.isLoading {
+                    VStack {
+                        Spacer()
+                        ProgressView("Loading chats...")
+                            .padding()
+                        Spacer()
+                    }
+                } else if !viewModel.channels.isEmpty {
                     List(viewModel.channels) { channel in
                         NavigationLink {
                             ChatView(channel: channel)
@@ -43,6 +50,9 @@ struct ChatChannelView: View {
             tabSelection.requestID = ""
             tabSelection.requestImageURL = ""
             tabSelection.requestName = ""
+        }
+        .onAppear {
+            viewModel.fetchChannels()
         }
     }
 }
@@ -76,11 +86,11 @@ struct ChannelView: View {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle(tint: Color.accent))
                 }
+                .scaledToFill()
                 .frame(width: 50, height: 50)
                 .clipShape(Circle())
         }
     }
-    
     
     var name: String {
         isCurrentUser ? channel.requestName : channel.ownerName

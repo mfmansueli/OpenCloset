@@ -9,7 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct HomeView: View {
-    @ObservedObject var viewModel: HomeViewModel = HomeViewModel()
+    @StateObject var viewModel: HomeViewModel = HomeViewModel()
     
     var body: some View {
         NavigationStack {
@@ -62,10 +62,12 @@ struct ProfileItemView: View {
         HStack {
             VStack(alignment: .leading) {
                 Text("\(profile.name) \(profile.surname)")
+                    .lineLimit(1)
                     .font(.system(size: 20))
                 
                 HStack {
                     Text(profile.distance)
+                        .lineLimit(1)
                         .foregroundColor(.accent)
                         .fontWeight(.bold)
                         .fontDesign(.rounded)
@@ -81,6 +83,7 @@ struct ProfileItemView: View {
                     }
                 }
                 Text(profile.about)
+                    .lineLimit(1)
                     .fontWeight(.bold)
                     .fontDesign(.rounded)
                     .foregroundColor(.black)
@@ -88,6 +91,10 @@ struct ProfileItemView: View {
             Spacer()
             KFImage(URL(string: profile.profileImageURL))
                 .resizable()
+                .placeholder{
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: Color.accent))
+                }
                 .scaledToFill()
                 .frame(width: 90, height: 90)
                 .clipShape(Circle())

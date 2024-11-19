@@ -9,6 +9,7 @@ import SwiftUI
 struct LoginView: View {
     @ObservedObject var viewModel: LoginViewModel
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var tabSelection: TabSelection
     
     init(selection: Binding<Int>) {
         viewModel = LoginViewModel(selection: selection)
@@ -58,6 +59,7 @@ struct LoginView: View {
         }
         .onAppear {
             viewModel.onLoginCompletion = {
+                tabSelection.selectedTab = 3
                 presentationMode.wrappedValue.dismiss()
             }
         }
