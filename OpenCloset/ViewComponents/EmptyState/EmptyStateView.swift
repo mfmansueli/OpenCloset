@@ -9,8 +9,8 @@ import SwiftUI
 
 struct EmptyStateView: View {
     
-    var imageName: String = "envelope"
-    var subtext: String = "Your chat is empty!\n Start swapping!"
+    var imageName: String = ""
+    var subtext: String = ""
     var body: some View {
         VStack {
             Spacer()
@@ -21,9 +21,10 @@ struct EmptyStateView: View {
                 .frame(height: 120)
                 .foregroundColor(Color(.accent))
             
-            Text (subtext)
+            Text(subtext)
                 .foregroundStyle(Color(.accent))
                 .font(.system(size: 20))
+                .padding(.top, 8)
                 .multilineTextAlignment(.center)
             
             Spacer()
@@ -32,5 +33,5 @@ struct EmptyStateView: View {
 }
 
 #Preview {
-    EmptyStateView(imageName: "hanger", subtext: "Your Open Closet is empty")
+    EmptyStateView(imageName: "hanger", subtext: "Your OpenCloset is empty")
 }

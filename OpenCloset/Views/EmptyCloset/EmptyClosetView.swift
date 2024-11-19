@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EmptyClosetView: View {
     var body: some View {
-        EmptyStateView(imageName: "hanger", subtext: "Your Open Closet is empty" )
+        EmptyStateView(imageName: "hanger", subtext: "Your OpenCloset is empty" )
     }
 }
 

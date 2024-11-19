@@ -8,9 +8,14 @@ import SwiftUI
 
 struct AddProductView: View {
     @ObservedObject var viewModel: AddProductViewModel = AddProductViewModel()
+    @Environment(\.presentationMode) var presentationMode
     
-    let sizes = ["S", "M", "L", "XL", "XXL", "XXXL"]
-    let conditions = ["Like New", "Good", "Used"]
+    var onAddProductCompletion: ((_ product: Product) -> Void)?
+    let conditions = ["Excellent condition", "Gently used", "Still in good condition"]
+    
+    init(onAddProductCompletion: ((_ product: Product) -> Void)?) {
+        self.onAddProductCompletion = onAddProductCompletion
+    }
     
     var body: some View {
         ScrollView {
@@ -21,77 +26,43 @@ struct AddProductView: View {
                     .font(.subheadline)
                     .foregroundColor(.gray)
                 
-                // Image Upload Grid
-                VStack(alignment: .leading){
-                    HStack(spacing: 8) {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.gray.opacity(0.2))
-                            .frame(minWidth: 150, maxWidth: 200, minHeight: 150, maxHeight: 200)
-                            .overlay(
-                                Image(systemName: "photo.on.rectangle.angled")
-                                    .font(.largeTitle)
-                                    .foregroundColor(.accent)
-                            )
-                            .onTapGesture {
-                                // Add Logic to add image
-                            }
-                        VStack {
-                            HStack {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color.gray.opacity(0.2))
-                                    .frame(width: 80, height: 80)
-                                    .overlay(
-                                        Image(systemName: "plus")
-                                            .foregroundColor(.accent)
-                                    )
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color.gray.opacity(0.2))
-                                    .frame(width: 80, height: 80)
-                                    .overlay(
-                                        Image(systemName: "plus")
-                                            .foregroundColor(.accent)
-                                    )
-                            }
-                            HStack {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color.gray.opacity(0.2))
-                                    .frame(width: 80, height: 80)
-                                    .overlay(
-                                        Image(systemName: "plus")
-                                            .foregroundColor(.accent)
-                                    )
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color.gray.opacity(0.2))
-                                    .frame(width: 80, height: 80)
-                                    .overlay(
-                                        Image(systemName: "plus")
-                                            .foregroundColor(.accent)
-                                    )
-                            }
+                ImageGridView(viewModel: viewModel)
+                    .confirmationDialog("", isPresented: $viewModel.showPhotoOptions, titleVisibility: .hidden, actions: {
+                        Button("Take a photo") {
+                            viewModel.showCamera = true
                         }
-                    }.onTapGesture {
-                        viewModel.showPhotoOptions = true
-                    }
+                        Button("Choose from library") {
+                            viewModel.showPhotoLibrary = true
+                        }
+                    })
+                    .fullScreenCover(isPresented: $viewModel.showCamera, content: {
+                        ZStack {
+                            Color.black.edgesIgnoringSafeArea(.all)
+                            ImageCaptureView(image: $viewModel.productImage)
+                        }
+                    })
+                    .fullScreenCover(isPresented: $viewModel.showPhotoLibrary, content: {
+                        ImagePickerView(images: $viewModel.productImageList, image: .constant(nil), allowMultipleSelection: true)
+                    })
+                
+                VStack(alignment: .leading) {
+                    Text("Item name")
+                        .font(.headline)
                     
+                    TextField("Stylish Sweater", text: $viewModel.name)
+                        .frame(maxWidth: .infinity, maxHeight: 30)
+                        .padding()
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(20)
+                    
+                    if let errorMessage = viewModel.itemNameError, !errorMessage.isEmpty {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                            .padding(.leading, 8)
+                            .padding(.bottom, 4)
+                    }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .confirmationDialog("", isPresented: $viewModel.showPhotoOptions, titleVisibility: .hidden, actions: {
-                    Button("Take a photo") {
-                        viewModel.showCamera = true
-                    }
-                    Button("Choose from library") {
-                        viewModel.showPhotoLibrary = true
-                    }
-                })
-                .fullScreenCover(isPresented: $viewModel.showCamera, content: {
-                    ZStack {
-                        Color.black.edgesIgnoringSafeArea(.all)
-                        ImageCaptureView(image: $viewModel.productImage)
-                    }
-                })
-                .fullScreenCover(isPresented: $viewModel.showPhotoLibrary, content: {
-                    ImagePickerView(images: $viewModel.productImageList, image: .constant(nil), allowMultipleSelection: true)
-                })
                 
                 // Text Field for Description
                 VStack(alignment: .leading) {
@@ -108,6 +79,14 @@ struct AddProductView: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .foregroundStyle(Color.gray.opacity(0.2))
                         }
+                    
+                    if let errorMessage = viewModel.itemDescriptionError, !errorMessage.isEmpty {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                            .padding(.leading, 8)
+                            .padding(.bottom, 4)
+                    }
                 }
                 
                 // Size and Condition Pickers
@@ -115,16 +94,20 @@ struct AddProductView: View {
                     VStack(alignment: .leading) {
                         Text("Size")
                             .font(.headline)
-                        Picker("Size", selection: $viewModel.selectedSize) {
-                            ForEach(sizes, id: \.self) { size in
-                                Text(size)
-                            }
+                        
+                        TextField("Medium", text: $viewModel.size)
+                            .frame(maxWidth: .infinity, maxHeight: 30)
+                            .padding()
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(20)
+                        
+                        if let errorMessage = viewModel.sizeError, !errorMessage.isEmpty {
+                            Text(errorMessage)
+                                .foregroundColor(.red)
+                                .font(.caption)
+                                .padding(.leading, 8)
+                                .padding(.bottom, 4)
                         }
-                        .pickerStyle(MenuPickerStyle())
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(20)
                     }
                     
                     VStack(alignment: .leading) {
@@ -136,10 +119,18 @@ struct AddProductView: View {
                             }
                         }
                         .pickerStyle(MenuPickerStyle())
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity, maxHeight: 30)
                         .padding()
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(20)
+                        
+                        if let errorMessage = viewModel.sizeError, !errorMessage.isEmpty {
+                            Text(errorMessage)
+                                .foregroundColor(.clear)
+                                .font(.caption)
+                                .padding(.leading, 8)
+                                .padding(.bottom, 4)
+                        }
                     }
                 }
                 
@@ -161,18 +152,36 @@ struct AddProductView: View {
                 }
                 .padding(.top, 8)
                 
-                Button("Upload") {
-                    
+                Button("Add to your OpenCloset") {
+                    viewModel.addProduct()
                 }
                 .padding(.horizontal, -16)
                 .buttonStyle(PrimaryButtonStyle())
                 
                 Spacer()
-            }.padding(.horizontal, 16)
-        }
+            }.padding(16)
+                .fullScreenCover(isPresented: $viewModel.isLoading) {
+                    ProgressView("Loading...")
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .shadow(radius: 10)
+                        .presentationBackground(.black.opacity(0.4))
+                }
+                .alert(isPresented: $viewModel.showAlert) {
+                    Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
+                }
+                .onAppear {
+                    viewModel.onAddProductCompletion = { product in
+                        onAddProductCompletion?(product)
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+        }.scrollDismissesKeyboard(.immediately)
     }
 }
 
+
 #Preview {
-    AddProductView()
+    AddProductView(onAddProductCompletion: { product in })
 }

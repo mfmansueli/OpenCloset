@@ -10,38 +10,28 @@ import Kingfisher
 import FirebaseAuth
 
 struct ProfileView: View {
-    @ObservedObject var viewModel: ProfileViewModel = ProfileViewModel()
+    @StateObject var viewModel: ProfileViewModel = ProfileViewModel()
     var profile: Profile
-    @State private var isLoading = false
-    @State var isCurrentUser = false
-    var productList: [Product] = [
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                    true, isSwapping: false),
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                    true, isSwapping: false),
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                    true, isSwapping: false),
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                    true, isSwapping: false),
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                    true, isSwapping: false),
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                    true, isSwapping: false),
-        Product(size: "P" , condition: "new", description: "uhashuas", image: ["https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"], isDonation:
-                    true, isSwapping: false)
-    ]
-    
     
     let columns: [GridItem] = [
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
     
+    init(profile: Profile) {
+        self.profile = profile
+    }
+    
     var body: some View {
         VStack {
             HStack {
                 KFImage(URL(string: profile.profileImageURL))
                     .resizable()
+                    .placeholder{
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: Color.accent))
+                    }
+                    .scaledToFill()
                     .frame(width: 130, height: 130)
                     .clipShape(Circle())
                     .overlay(Circle()
@@ -55,50 +45,53 @@ struct ProfileView: View {
                         .bold()
                     HStack {
                         Text("150 m")
-                        .fontWeight(.bold)
-                        .fontDesign(.rounded)
-                        .foregroundColor(.accent)
-                        .font(.system(size: 20))
-                        .padding(.trailing, 20)
+                            .fontWeight(.bold)
+                            .fontDesign(.rounded)
+                            .foregroundColor(.accent)
+                            .font(.system(size: 20))
+                            .padding(.trailing, 20)
                         HStack {
                             ForEach(0..<3, id: \.self) { _ in
                                 Image(systemName: "star.fill")
                                     .foregroundColor(.accent)
                             }
                         }
-
+                        
                     }
                     
                 }
                 Spacer()
             }
             .padding(.bottom, 5)
-
+            
             .padding()
-            if productList.isEmpty {
-                EmptyStateView(imageName: "hanger", subtext: "Your Open Closet is empty")
+            
+            if viewModel.isLoading {
+                VStack {
+                    Spacer()
+                    ProgressView("Loading products...")
+                        .padding()
+                    Spacer()
+                }
+            } else if viewModel.productList.isEmpty {
+                EmptyStateView(imageName: "hanger", subtext: emptyStateMessage)
             } else {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 10) {
-                        ForEach(productList, id: \.self) { product in
-                            NavigationLink(destination: ProductView()) {
-                                KFImage(URL(string: product.image.first ?? "")) //uso KFImage per caricare l'immagine in ogni cella della griglia
-                                    .placeholder({
-                                        Image(systemName: "clothes")
-                                    })
+                        ForEach(viewModel.productList, id: \.self) { product in
+                            NavigationLink(destination: ProductView(product: product, owner: profile)) {
+                                KFImage(URL(string: product.imageURLs.first ?? ""))
                                     .resizable()
-                                    .scaledToFill() // per scalare l'immagine
-                                    .frame(height: 160) // per l'altezza del rettangolo nella griglia
+                                    .fade(duration: 0.25)
+                                    .placeholder{
+                                        ProgressView()
+                                            .progressViewStyle(CircularProgressViewStyle(tint: Color.accent))
+                                    }
+                                    .scaledToFill()
+                                    .frame(height: 160)
+                                    .shadow(radius: 10)
                                     .cornerRadius(20)
-                                
-                                    .cornerRadius(10)
                             }
-                        }
-                        
-                        // Show loading indicator at the end of the list
-                        if isLoading {
-                            ProgressView()
-                                .padding()
                         }
                     }
                     .padding()
@@ -106,8 +99,11 @@ struct ProfileView: View {
             }
             
             Spacer()
-            if Auth.auth().currentUser != nil {
-                NavigationLink(destination: AddProductView()) {
+            if isCurrentUser {
+                NavigationLink(destination: AddProductView(onAddProductCompletion:
+                                                            { product in
+                    viewModel.addProduct(product: product)
+                })) {
                     Button(action: {
                     }) {
                         Text("Add clothes")
@@ -115,19 +111,28 @@ struct ProfileView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .allowsHitTesting(false)
                 }
-            } else {
-                Button(action: {
-                    // Action for Ask Info
-                }) {
-                    Text("Ask Info ♡")
-                }
-                .buttonStyle(PrimaryButtonStyle())
             }
-        }.navigationTitle("Closet")
+        }
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
+        }
+        .onAppear {
+            viewModel.fetchProducts(userID: profile.id)
+        }
+    }
+    
+    var isCurrentUser: Bool {
+        if let loggedUserProfile = AppDefault.loadObject(type: Profile.self, key: .userProfile),
+           loggedUserProfile.id == profile.id {
+            return true
+        }
+        return false
+    }
+    
+    var emptyStateMessage: String {
+        isCurrentUser ? "Your OpenCloset is empty" : "\(profile.name)'s OpenCloset is empty."
     }
 }
-
-
 
 #Preview {
     ProfileView(profile: Profile(name: "Paola", surname: "Campanile", email: "paula@campanile.com", about: "Second-hand enthusiast 🌱 ", profileImageURL: "https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-in-shirt-smiles-and-gives-thumbs-up-to-show-approval-png-image_13146336.png"))

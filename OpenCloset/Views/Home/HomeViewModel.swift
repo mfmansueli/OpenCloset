@@ -9,6 +9,7 @@ import Foundation
 import FirebaseFirestore
 import SwiftUI
 import CoreLocation
+import FirebaseAuth
 
 class HomeViewModel: ObservableObject {
     @ObservedObject var locationManager = LocationManager()
@@ -46,7 +47,9 @@ class HomeViewModel: ObservableObject {
                     distanceList.append("\(value)m")
                 }
         
-        let collection: Query = Firestore.firestore().collection("Profiles").limit(toLast: page * 100).order(by: "name")
+            let userID = Auth.auth().currentUser?.uid ?? ""
+        let collection: Query = Firestore.firestore().collection("Profiles")
+            .order(by: "name")
         var list: [Profile] = []
         collection.getDocuments { [weak self] (snapshot, error) in
             if let error = error {
@@ -54,13 +57,15 @@ class HomeViewModel: ObservableObject {
                 self?.errorMessage = error.localizedDescription
             } else {
                 for document in snapshot!.documents {
-                    do {
-                        var profile = try document.data(as: Profile.self)
-                        profile.id = document.documentID
-                        profile.distance = distanceList.removeFirst()
-                        list.append(profile)
-                    } catch(let error) {
-                        print("Error decoding profile: \(error)")
+                    if document.documentID != userID {
+                        do {
+                            var profile = try document.data(as: Profile.self)
+                            profile.id = document.documentID
+                            profile.distance = distanceList.removeFirst()
+                            list.append(profile)
+                        } catch(let error) {
+                            print("Error decoding profile: \(error)")
+                        }
                     }
                 }
                 

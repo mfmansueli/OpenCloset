@@ -12,8 +12,8 @@ struct RegisterView: View {
     @ObservedObject var viewModel: RegisterViewModel
     @Environment(\.presentationMode) var presentationMode
     
-    init(name: String, surname: String, email: String, profileImageURL: String?) {
-        viewModel = RegisterViewModel(name: name, surname: surname, email: email, profileImageURL: profileImageURL)
+    init(id: String, name: String, surname: String, email: String, profileImageURL: String?) {
+        viewModel = RegisterViewModel(id: id, name: name, surname: surname, email: email, profileImageURL: profileImageURL)
     }
     
     var body: some View {
@@ -21,8 +21,26 @@ struct RegisterView: View {
             ScrollView {
                 VStack {
                     VStack {
-//                        if let profileImageURL = viewModel.profileImageURL {
-                            KFImage(URL(string: "https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png"))
+                        if let profileImageURL = viewModel.profileImageURL {
+                            KFImage(URL(string: profileImageURL))
+                                .resizable()
+                                .placeholder{
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: Color.accent))
+                                }
+                                .scaledToFill()
+                                .frame(width: 250, height: 250)
+                                .clipShape(Circle())
+                                .overlay(Circle().strokeBorder(Color.textTitle, lineWidth: 4)
+                                    .frame(width: 250, height: 250))
+                                .padding(.bottom, 48)
+                                .onTapGesture {
+                                    viewModel.showPhotoOptions = true
+                                }
+                        } else if let profileImage = viewModel.profileImage {
+                            // Display the profile image if available
+                            
+                            Image(uiImage: profileImage)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 250, height: 250)
@@ -33,40 +51,24 @@ struct RegisterView: View {
                                 .onTapGesture {
                                     viewModel.showPhotoOptions = true
                                 }
-//                        } else if let profileImage = viewModel.profileImage {
-//                            // Display the profile image if available
-//                            
-//                            Image(uiImage: profileImage)
-//                                .resizable()
-//                                .scaledToFill()
-//                                .frame(width: 250, height: 250)
-//                                .clipShape(Circle())
-//                                .overlay(Circle().strokeBorder(Color.textTitle, lineWidth: 4)
-//                                    .frame(width: 250, height: 250))
-//                                .padding(.bottom, 48)
-//                                .onTapGesture {
-//                                    viewModel.showPhotoOptions = true
-//                                }
-//                        } else {
-                            // Default overlay when no profile image is available
-                            
-//                            Circle()
-//                                .strokeBorder(Color.textTitle, lineWidth: 4)
-//                                .background(Circle().foregroundColor(.white))
-//                                .overlay(
-//                                    Image(systemName: "person.crop.circle.badge.plus")
-//                                        .resizable()
-//                                        .scaledToFit()
-//                                        .foregroundColor(.textTitle)
-//                                        .padding(80)
-//                                        .padding(.trailing, 16)
-//                                        .onTapGesture {
-//                                            viewModel.showPhotoOptions = true
-//                                        }
-//                                )
-//                                .frame(width: 250, height: 250)
-//                                .padding(.bottom, 48)
-//                        }
+                        } else {
+                            Circle()
+                                .strokeBorder(Color.textTitle, lineWidth: 4)
+                                .background(Circle().foregroundColor(.white))
+                                .overlay(
+                                    Image(systemName: "person.crop.circle.badge.plus")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .foregroundColor(.textTitle)
+                                        .padding(80)
+                                        .padding(.trailing, 16)
+                                        .onTapGesture {
+                                            viewModel.showPhotoOptions = true
+                                        }
+                                )
+                                .frame(width: 250, height: 250)
+                                .padding(.bottom, 48)
+                        }
                     }
                     .confirmationDialog("", isPresented: $viewModel.showPhotoOptions, titleVisibility: .hidden, actions: {
                         Button("Take a photo") {
@@ -90,7 +92,7 @@ struct RegisterView: View {
                     ClearableTextField(text: $viewModel.email, placeholder: "Email", errorMessage: viewModel.emailError, keyboardType: .emailAddress, textContentType: .emailAddress)
                     ClearableTextField(text: $viewModel.name, placeholder: "Name", errorMessage: viewModel.nameError, textContentType: .givenName)
                     ClearableTextField(text: $viewModel.surname, placeholder: "Surname", errorMessage: viewModel.surnameError, textContentType: .familyName)
-                   
+                    
                     TextEditor(text: $viewModel.about)
                         .frame(height: 100)
                         .multilineTextAlignment(.leading)
@@ -110,7 +112,7 @@ struct RegisterView: View {
                                     .foregroundStyle(Color.gray.opacity(0.2))
                             }
                         }
-
+                    
                     
                     Spacer()
                     
@@ -118,9 +120,6 @@ struct RegisterView: View {
                         viewModel.register()
                     }.buttonStyle(PrimaryButtonStyle())
                 }
-                
-                
-                
             }
             .scrollDismissesKeyboard(.immediately)
             .navigationBarTitle("Register", displayMode: .inline)
@@ -135,8 +134,20 @@ struct RegisterView: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $viewModel.isLoading) {
+            ProgressView("Loading...")
+                .padding()
+                .background(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 10)
+                .presentationBackground(.black.opacity(0.4))
+        }
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
+        }
         .onAppear {
             viewModel.onRegisterCompletion = {
+                presentationMode.wrappedValue.dismiss()
                 presentationMode.wrappedValue.dismiss()
             }
         }
@@ -144,5 +155,5 @@ struct RegisterView: View {
 }
 
 #Preview {
-    RegisterView(name: "", surname: "", email: "", profileImageURL: "")
+    RegisterView(id: "", name: "", surname: "", email: "", profileImageURL: "")
 }

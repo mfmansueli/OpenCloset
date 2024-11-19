@@ -9,32 +9,47 @@ import SwiftUI
 import Kingfisher
 
 struct HomeView: View {
-    @ObservedObject var viewModel: HomeViewModel = HomeViewModel()
+    @StateObject var viewModel: HomeViewModel = HomeViewModel()
     
     var body: some View {
         NavigationStack {
-            VStack {
-                HStack {
-                    TextField("Search", text: $viewModel.searchText)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .padding(.horizontal, 10)
-                    
-                    Image(systemName: "magnifyingglass")
-                        .padding(.trailing, 10)
-                }
-                List(viewModel.filteredItems) { profile in
-                    NavigationLink(destination: ProfileView(profile: profile)) {
-                        ProfileItemView(profile: profile)
+            ZStack {
+                // Background color
+                Color.gray.opacity(0.1)
+                    .edgesIgnoringSafeArea(.all)  // Ensuring it covers the whole background
+                
+                VStack {
+                    HStack {
+                        TextField("Search", text: $viewModel.searchText)
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(10)
+                            .padding(.horizontal, 10)
+                        
+                        Image(systemName: "magnifyingglass")
+                            .padding(.trailing, 10)
                     }
-                }.refreshable {
-                    viewModel.page = 1
-                }.scrollDismissesKeyboard(.immediately)
+                    .frame(height: 50)
+                    
+                    List(viewModel.filteredItems) { profile in
+                        NavigationLink(destination: ProfileView(profile: profile)) {
+                            ProfileItemView(profile: profile)
+                        }
+                    }
+                    .refreshable {
+                        viewModel.page = 1
+                    }
+                    .scrollDismissesKeyboard(.immediately)
+                    .scrollContentBackground(.hidden)
+                    
+                }
+//                Spacer()
+//                    .background(Color.gray.opacity(0.1))
             }
         }
     }
 }
+
 
 #Preview {
     HomeView()
@@ -47,10 +62,12 @@ struct ProfileItemView: View {
         HStack {
             VStack(alignment: .leading) {
                 Text("\(profile.name) \(profile.surname)")
+                    .lineLimit(1)
                     .font(.system(size: 20))
                 
                 HStack {
                     Text(profile.distance)
+                        .lineLimit(1)
                         .foregroundColor(.accent)
                         .fontWeight(.bold)
                         .fontDesign(.rounded)
@@ -66,6 +83,7 @@ struct ProfileItemView: View {
                     }
                 }
                 Text(profile.about)
+                    .lineLimit(1)
                     .fontWeight(.bold)
                     .fontDesign(.rounded)
                     .foregroundColor(.black)
@@ -73,6 +91,11 @@ struct ProfileItemView: View {
             Spacer()
             KFImage(URL(string: profile.profileImageURL))
                 .resizable()
+                .placeholder{
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: Color.accent))
+                }
+                .scaledToFill()
                 .frame(width: 90, height: 90)
                 .clipShape(Circle())
         }

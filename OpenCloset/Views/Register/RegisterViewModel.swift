@@ -9,9 +9,9 @@ import Firebase
 import FirebaseStorage
 import FirebaseAuth
 
-
 class RegisterViewModel: ObservableObject {
     
+    var id: String
     @Published var profileImage: UIImage? { didSet { profileImageURL = nil } }
     @Published var email: String = ""
     @Published var name: String = ""
@@ -24,11 +24,15 @@ class RegisterViewModel: ObservableObject {
     @Published var emailError: String?
     @Published var nameError: String?
     @Published var surnameError: String?
+    @Published var showAlert: Bool = false
+    @Published var alertMessage: String = ""
+    @Published var isLoading = false
     
     var profileImageURL: String?
     var onRegisterCompletion: (() -> Void)?
     
-    init(name: String, surname: String, email: String, profileImageURL: String?) {
+    init(id: String, name: String, surname: String, email: String, profileImageURL: String?) {
+        self.id = id
         self.name = name
         self.surname = surname
         self.email = email
@@ -40,6 +44,7 @@ class RegisterViewModel: ObservableObject {
             return
         }
         
+        isLoading = true
         if let image = profileImage {
             let imageName = UUID().uuidString
             let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(imageName).jpg")
@@ -50,28 +55,29 @@ class RegisterViewModel: ObservableObject {
                 
                 let storageRef = Storage.storage().reference().child("profile_images/\(imageName).jpg")
                 
-                storageRef.putFile(from: fileURL, metadata: nil) { metadata, error in
+                
+                storageRef.putFile(from: fileURL, metadata: nil) { [weak self] metadata, error in
                     if let error = error {
-                        print("Error uploading file: \(error.localizedDescription)")
+                        self?.showAlert(message: "Error uploading file: \(error.localizedDescription)")
                         return
                     }
                     
                     storageRef.downloadURL { url, error in
                         if let error = error {
-                            print("Error getting download URL: \(error.localizedDescription)")
+                            self?.showAlert(message: "Error getting download URL: \(error.localizedDescription)")
                             return
                         }
                         
                         guard let downloadURL = url else {
-                            print("Download URL not found")
+                            self?.showAlert(message: "Download URL not found")
                             return
                         }
                         
-                        self.saveProfileData(profileImageURL: downloadURL.absoluteString)
+                        self?.saveProfileData(profileImageURL: downloadURL.absoluteString)
                     }
                 }
             } catch {
-                print("Error writing image to file: \(error.localizedDescription)")
+                showAlert(message: "Error writing image to file: \(error.localizedDescription)")
             }
         } else {
             self.saveProfileData(profileImageURL: profileImageURL)
@@ -82,21 +88,23 @@ class RegisterViewModel: ObservableObject {
         let collection = Firestore.firestore().collection("Profiles")
         
         var profileData: [String: Any] = [
-            "name": self.name,
-            "surname": self.surname,
-            "email": self.email,
-            "about": self.about
+            "name": name,
+            "surname": surname,
+            "email": email,
+            "about": about
         ]
         
         if let imageUrl = profileImageURL {
             profileData["profileImageURL"] = imageUrl
         }
         
-        collection.addDocument(data: profileData) { [weak self] error in
+        let profile = Profile(name: name, surname: surname, email: email, about: about, profileImageURL: profileImageURL ?? "")
+        collection.document(id).setData(profileData) { [weak self] error in
             if let error = error {
-                print("Error adding document: \(error.localizedDescription)")
+                self?.showAlert(message: "Error adding document: \(error.localizedDescription)")
             } else {
-                print("Document added successfully!")
+                self?.isLoading = false
+                AppDefault.saveObject(value: profile, key: .userProfile)
                 self?.onRegisterCompletion?()
             }
         }
@@ -136,5 +144,11 @@ class RegisterViewModel: ObservableObject {
         let emailRegEx = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,64}$"
         let emailPredicate = NSPredicate(format:"SELF MATCHES[c] %@", emailRegEx)
         return emailPredicate.evaluate(with: email)
+    }
+    
+    func showAlert(message: String) {
+        alertMessage = message
+        showAlert = true
+        isLoading = false
     }
 }
