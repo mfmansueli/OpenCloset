@@ -40,8 +40,12 @@ struct ChatView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, 16)
                 .listRowSeparator(.hidden)
-            }.listStyle(.plain)
-                .scrollDismissesKeyboard(.immediately)
+            }
+            .listStyle(.plain)
+            .scrollDismissesKeyboard(.interactively)
+            .gesture(TapGesture().onEnded {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            })
             
             HStack {
                 TextField("Message", text: $viewModel.message)

@@ -53,7 +53,8 @@ struct ProfileView: View {
                         HStack {
                             ForEach(0..<3, id: \.self) { _ in
                                 Image(systemName: "star.fill")
-                                    .foregroundColor(.accent)
+                                    .foregroundColor(.yellow)
+                                    .frame(width: 12, height: 20)
                             }
                         }
                         

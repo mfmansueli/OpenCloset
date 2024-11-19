@@ -6,12 +6,13 @@
 //
 import Foundation
 import FirebaseDatabase
+
 class ChatChannelViewModel: ObservableObject {
     @Published var channels: [Channel] = []
-    @Published var isLoading: Bool = false
+@Published var isLoading: Bool = false
     
     init() {
-//        fetchChannels()
+        fetchChannels()
     }
 
     func fetchChannels() {
@@ -20,56 +21,33 @@ class ChatChannelViewModel: ObservableObject {
             return
         }
 
-        isLoading = true
         let currentUserID = currentUserProfile.id
         let ref = Database.database().reference().child("channels")
-        
-        let ownerQuery = ref.queryOrdered(byChild: "ownerID").queryEqual(toValue: currentUserID)
-        let requestQuery = ref.queryOrdered(byChild: "requestID").queryEqual(toValue: currentUserID)
+        isLoading = true
+        ref.observe(.value) { snapshot in
+            var newChannels: [Channel] = []
+            let dispatchGroup = DispatchGroup()
 
-        let dispatchGroup = DispatchGroup()
-        var newChannels: [Channel] = []
-
-        // Fetch channels where ownerID matches current user ID
-        dispatchGroup.enter()
-        ownerQuery.observeSingleEvent(of: .value) { snapshot in
             for child in snapshot.children {
                 if let snapshot = child as? DataSnapshot,
                    let channel = Channel(snapshot: snapshot) {
-                    dispatchGroup.enter()
-                    self.fetchLastMessage(for: channel.id) { message in
-                        var updatedChannel = channel
-                        updatedChannel.lastMessage = message
-                        newChannels.append(updatedChannel)
-                        dispatchGroup.leave()
+                    // Filter channels by ownerID or requestID
+                    if channel.ownerID == currentUserID || channel.requestID == currentUserID {
+                        dispatchGroup.enter()
+                        self.fetchLastMessage(for: channel.id) { message in
+                            var updatedChannel = channel
+                            updatedChannel.lastMessage = message
+                            newChannels.append(updatedChannel)
+                            dispatchGroup.leave()
+                        }
                     }
                 }
             }
-            dispatchGroup.leave()
-        }
-
-        // Fetch channels where requestID matches current user ID
-        dispatchGroup.enter()
-        requestQuery.observeSingleEvent(of: .value) { snapshot in
-            for child in snapshot.children {
-                if let snapshot = child as? DataSnapshot,
-                   let channel = Channel(snapshot: snapshot) {
-                    dispatchGroup.enter()
-                    self.fetchLastMessage(for: channel.id) { message in
-                        var updatedChannel = channel
-                        updatedChannel.lastMessage = message
-                        newChannels.append(updatedChannel)
-                        dispatchGroup.leave()
-                    }
-                }
+            
+            dispatchGroup.notify(queue: .main) {
+                self.channels = newChannels
+                self.isLoading = false
             }
-            dispatchGroup.leave()
-        }
-
-        dispatchGroup.notify(queue: .main) {
-            // Removing duplicates if any
-            self.channels = Array(Set(newChannels))
-            self.isLoading = false
         }
     }
 
