@@ -1,3 +1,7 @@
 # OpenCloset
 
-Help people find second-hand clothes/accessories to swap for another items/(Open closet Points); or to Donate to others. 
+An app that helps people to swap or donate clothes, empowering the second-hand community and promoting sustainability.🌱
+
+
+
+
